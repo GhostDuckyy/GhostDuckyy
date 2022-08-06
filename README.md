@@ -7,4 +7,4 @@ Enjoying destroy kid in a lego game.
 Ghost-Ducky#7698
 
 ## Script i made
-![https://github.com/GhostDuckyy/Bread/blob/main/bread.jpg](https://github.com/GhostDuckyy/Bread)
+![(https://github.com/GhostDuckyy/Bread/blob/main/bread.jpg)](https://github.com/GhostDuckyy/Bread)
