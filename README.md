@@ -5,6 +5,5 @@ Enjoying destroy kid in a lego game.
 
 ## Discord
 `Ghost-Ducky#7698`
-
-## All script in repository
+### All script in repository
 ### [Bread](https://github.com/GhostDuckyy/Bread)
