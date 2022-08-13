@@ -8,6 +8,10 @@
 - Step 3: Get into your car
 - Step 4: Enjoy the autofarm
 
+## Picture:
+I guess it 
+!(https://cdn.discordapp.com/attachments/1003648116488155177/1007978298036457534/unknown.png)
+
 ### Loadstring:
 ```lua
   getgenv().RatingTarget  = 1; -- It will targets that have your set amount or above
