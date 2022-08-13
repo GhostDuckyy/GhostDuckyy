@@ -9,7 +9,8 @@
 - Step 4: Enjoy the autofarm
 
 ## Picture:
-I guess it 
+I guess it **Patched**
+
 ![](https://cdn.discordapp.com/attachments/1003648116488155177/1007978298036457534/unknown.png)
 
 ### Loadstring:
