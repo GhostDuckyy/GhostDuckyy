@@ -1,4 +1,4 @@
-## Texi boss Autofarm
+## [Texi boss](https://www.roblox.com/games/7305309231/) autofarm
 #### Made by [Samuell](https://v3rmillion.net/member.php?action=profile&uid=610035)
 #### Click to [Thread](https://v3rmillion.net/showthread.php?tid=1182130)
 
