@@ -8,6 +8,14 @@
 - Step 3: Get into your car
 - Step 4: Enjoy the autofarm
 
+### Loadstring:
+```lua
+  getgenv().RatingTarget  = 1; -- It will targets that have your set amount or above
+  getgenv().HighestRatingTarget = 2; -- The cap of rating target (so you aren't targetting rating 8+ or something)
+
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Fixed/Texi%20Boss/source.lua",true))()
+```
+
 Fixed:
 ```lua
 Change "game.VirtualInputManager" to "game:GetService("VirtualInputManager")"
