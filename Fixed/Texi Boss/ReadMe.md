@@ -10,7 +10,7 @@
 
 ## Picture:
 I guess it 
-!(https://cdn.discordapp.com/attachments/1003648116488155177/1007978298036457534/unknown.png)
+![](https://cdn.discordapp.com/attachments/1003648116488155177/1007978298036457534/unknown.png)
 
 ### Loadstring:
 ```lua
