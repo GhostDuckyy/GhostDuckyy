@@ -5,6 +5,6 @@ Enjoying destroy kid in a lego game.
 
 ## Contact me
 `Ghost-Ducky#7698` (Discord)
-#### All script in repository
-#### [Bread](https://github.com/GhostDuckyy/Bread)
+#### Repository
+#### [Bread](https://github.com/GhostDuckyy/Bread) | Made by me & open source
 #### [Ui Librarys](https://github.com/GhostDuckyy/Ui-Librarys) ( A repository to save ui library and docs )
