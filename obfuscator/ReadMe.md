@@ -2,7 +2,6 @@
 Obfuscator made by [**kosuke14**](https://github.com/kosuke14)
 
 ## How to use
-**Example**
 ```lua
 getgenv().customVar = "Duckyy"
 getgenv().watermark = "Secure by kosuke14"
