@@ -10,7 +10,7 @@ getgenv().source = [[
   --// your script here
 ]]
 
-loadstring(game:HttpGet(""))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/obfuscator/source.lua"))()
 ```
 Step 1: Join any roblox place
 
