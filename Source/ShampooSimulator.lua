@@ -8,6 +8,7 @@ local Library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloo
 --// Env
 local w = Library:CreateWindow("Shampoo Simulator")
 local auto = w:CreateFolder("Automatic")
+local misc = w:CreateFolder("Misc")
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -28,7 +29,7 @@ auto:Toggle("Auto shampoo",function(bool)
     end
 end)
 
-auto:Dropdown("Sell mode",{"Max","Timer"},false,function(options)
+auto:Dropdown("Sell mode",{"Full","Timer"},false,function(options)
     Setting.sell_mode = options
 end)
 
@@ -61,7 +62,6 @@ end)
 auto:Button("Claim all chest",function()
     claim_all_chest()
 end)
-
 
 function auto_shampoo()
     task.spawn(function()
@@ -134,9 +134,9 @@ end
 
 function auto_sell(mode)
     task.spawn(function()
-        if mode == nil then mode = "max" else mode = tostring(mode):lower() end
+        if mode == nil then mode = "full" else mode = tostring(mode):lower() end
 
-        if mode == "max" then
+        if mode == "full" then
             local sell = workspace.Map.World1.Floor.SellStation.Beacon.Toucher
             local Hair = LocalPlayer.leaderstats:FindFirstChild("Hair")
             local old = Hair.Value
@@ -192,3 +192,6 @@ function claim_all_chest()
         end
     end)
 end
+
+misc:Button("Made by Ghost-Ducky#7698",function() print("Hello World!") end)
+misc:DestroyGui()
