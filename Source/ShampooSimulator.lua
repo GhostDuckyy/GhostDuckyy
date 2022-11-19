@@ -19,6 +19,8 @@ getgenv().Setting = {
     auto_sell = false,
     auto_farm_pumpkin = false,
     auto_farm_boss = false,
+    upgrade_hair = false,
+    upgrade_shampoo = false,
 }
 
 --// Source
@@ -38,6 +40,20 @@ auto:Toggle("Auto sell",function(bool)
     Setting.auto_sell = bool
     if bool then
         auto_sell(Setting.sell_mode)
+    end
+end)
+
+auto:Toggle("Upgrade hair",function(bool)
+    Setting.upgrade_hair = bool
+    if bool then
+        auto_upgrade("hair")
+    end
+end)
+
+auto:Toggle("Upgrade shampoo",function(bool)
+    Setting.upgrade_shampoo = bool
+    if bool then
+        auto_upgrade("shampoo")
     end
 end)
 
@@ -69,9 +85,10 @@ function auto_shampoo()
             if LocalPlayer.Character then
                 if not LocalPlayer.Backpack:FindFirstChild("Shampoo") then
                     local tool = LocalPlayer.Character:FindFirstChild("Shampoo")
+                    local remote = tool["Remotes"]["Events"]:FindFirstChild("RequestPoints")
 
-                    if tool and tool["Remotes"]["Events"]:FindFirstChild("RequestPoints") then
-                        tool["Remotes"]["Events"]["RequestPoints"]:FireServer()
+                    if tool and remote then
+                        remote:FireServer()
                     end
                 else
                     local tool = LocalPlayer.Backpack:FindFirstChild("Shampoo")
@@ -108,7 +125,7 @@ function farm_pumpkin()
                 if LocalPlayer.Character and v:FindFirstChild("MoneyHalloween") and v["MoneyHalloween"]:FindFirstChild("Body") then
                     local hrp = LocalPlayer.Character["HumanoidRootPart"]
                     hrp.CFrame = v["MoneyHalloween"]:FindFirstChild("Body").CFrame
-                    task.wait(1)
+                    task.wait(.5)
                 end
             end
             task.wait(.1)
@@ -120,7 +137,8 @@ function farm_boss()
     task.spawn(function()
         while Setting.auto_farm_boss do
             if LocalPlayer.Character then
-                local tool = LocalPlayer.Backpack:FindFirstChild("Pow") or LocalPlayer.Character:FindFirstChild("Pow")
+                local tool = false
+                if LocalPlayer.Backpack:FindFirstChild("Pow") then tool = LocalPlayer.Backpack["Pow"] elseif LocalPlayer.Character:FindFirstChild("Pow") then tool = LocalPlayer.Character["Pow"] end
                 local remote = tool["Remotes"]["Events"]:FindFirstChild("RequestHit")
 
                 if tool and remote then
@@ -193,5 +211,26 @@ function claim_all_chest()
     end)
 end
 
-misc:Button("Made by Ghost-Ducky#7698",function() print("Hello World!") end)
+function auto_upgrade(x)
+    x = tostring(x):lower()
+    if x == "hair" then
+        task.spawn(function()
+            while Setting.upgrade_hair do
+                local remote = game:GetService("ReplicatedStorage").Remotes.Functions.BuyPointLimit
+                if remote then remote:InvokeServer("buyOne") end
+                task.wait(.1)
+            end
+        end)
+    elseif x == "shampoo" then
+        task.spawn(function()
+            while Setting.upgrade_shampoo do
+                local remote = game:GetService("ReplicatedStorage").Remotes.Functions.BuyPointTool
+                if remote then remote:InvokeServer("buyAll") end
+                task.wait(.1)
+            end
+        end)
+    end
+end
+
+misc:Button("Ghost-Ducky#7698",function() print("Hello World!") end)
 misc:DestroyGui()
