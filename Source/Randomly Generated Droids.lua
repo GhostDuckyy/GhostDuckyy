@@ -130,7 +130,7 @@ function AutoFarm()
 
         local source = [=[
             task.wait(1)
-            
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Source/Randomly%20Generated%20Droids.lua"))()
         ]=]
 
         if Setting.AutoRestart then
