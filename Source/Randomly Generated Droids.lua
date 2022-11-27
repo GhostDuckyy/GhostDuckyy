@@ -38,13 +38,13 @@ function AutoFarm()
                 mob:FindFirstChildOfClass("Humanoid").Health = -1
 
                 task.spawn(function()
-                    task.wait(7.5)
-                    if mob ~= nil and Character and Character:FindFirstChild("HumanoidRootPart") then
+                    task.wait(8.5)
+                    if mob ~= nil and mob:FindFirstChild("HumanoidRootPart") and Character and Character:FindFirstChild("HumanoidRootPart") then
                         consolePrint("Debug: Detected a timeout \n")
                         local Panic = game:GetService("ReplicatedStorage").PANIC
                         Panic:FireServer()
 
-                        workspace["InvisiblePart"].CFrame = Character.HumanoidRootPart.CFrame * CFrame.new(0, 10, 20)
+                        workspace["InvisiblePart"].CFrame = Character.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0)
                         task.wait(.1)
                         Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
                     end
@@ -84,7 +84,7 @@ function AutoFarm()
         if workspace:FindFirstChild("Room") and Character and Character:FindFirstChild("HumanoidRootPart") then
             consolePrint("Debug: Teleport to room \n")
             local Floor = workspace["Room"].Floor
-            workspace["InvisiblePart"].CFrame =CFrame.new(Floor.CFrame.X, Floor.CFrame.Y + 25, Floor.CFrame.Z + 30)
+            workspace["InvisiblePart"].CFrame =CFrame.new(Floor.CFrame.X, Floor.CFrame.Y + 30, Floor.CFrame.Z + 30)
             Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
         end
     end
@@ -166,15 +166,15 @@ function AutoFarm()
 
             Killaura()
 
-            task.wait(.5)
+            task.wait(.350)
 
             ActiveButton()
 
-            task.wait(.5)
+            task.wait(.350)
 
             GotoRoom()
 
-            task.wait(.5)
+            task.wait(.1)
         end
     end)
 end
