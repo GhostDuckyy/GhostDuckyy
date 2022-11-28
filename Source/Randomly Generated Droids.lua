@@ -91,7 +91,7 @@ function AutoFarm()
             end
 
             consolePrint("Debug: Teleport to room \n")
-            local Floor = workspace["Room"].Floor
+            local Floor = workspace["Room"]:WaitForChild("Floor", 10)
             workspace["InvisiblePart"].CFrame =CFrame.new(Floor.CFrame.X, Floor.CFrame.Y + 30, Floor.CFrame.Z + 30)
             Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
         end
