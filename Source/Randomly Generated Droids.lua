@@ -18,7 +18,7 @@ function AutoFarm()
 
     local function CreateConsole()
         local create = rconsolecreate or consolecreate or false
-        if not create then consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/27/2022 \n\n") return else create(); task.wait(.5); consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/27/2022 \n\n"); return end
+        if not create then consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/28/2022 \n\n") return else create(); task.wait(.5); consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/27/2022 \n\n"); return end
     end
 
     local function ClearConsole()
