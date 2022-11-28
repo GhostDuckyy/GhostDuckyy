@@ -169,6 +169,25 @@ function AutoFarm()
         end
     end
 
+    local function TimeOut()
+        task.spawn(function()
+            local RoomValue = game:GetService("Workspace").GenValues.RoomNumber.Value
+            local oldRoomValue = 0
+            while true do
+                if Character then
+                    if oldRoomValue == RoomValue then
+                        local Humanoid = Character:FindFirstChild("Humanoid")
+                        if Humanoid then consolePrint("Detect Error!"); Humanoid.Health = -1; break; end
+                    else
+                        oldRoomValue = RoomValue
+                        task.wait(8)
+                    end
+                end
+                task.wait(.1)
+            end
+        end)
+    end
+
     local function Killaura()
         local function KillEnemy(mob)
             task.wait(.2)
@@ -185,10 +204,10 @@ function AutoFarm()
                 task.wait(.05)
 
                 consolePrint("Debug: Target = ".. tostring(mob.Name) .."\n")
-                if mob:FindFirstChildOfClass("Humanoid") then consolePrint("Debug: Set Target MaxHealth = 0 \n"); mob:FindFirstChildOfClass("Humanoid").MaxHealth = 0; consolePrint("Debug: Set Target Health = 0 \n"); mob:FindFirstChildOfClass("Humanoid").Health = -100; end
+                if mob:FindFirstChildOfClass("Humanoid") then consolePrint("Debug: Set Target MaxHealth = 0 \n"); mob:FindFirstChildOfClass("Humanoid").MaxHealth = 0; consolePrint("Debug: Set Target Health = 0 \n"); mob:FindFirstChildOfClass("Humanoid").Health = -1; end
 
                 task.spawn(function()
-                    task.wait(10)
+                    task.wait(8)
                     if not Timeout then return end
 
                     consolePrint("Detect a timeout \n")
@@ -226,6 +245,7 @@ function AutoFarm()
         consolePrint("--> AutoFarm will start in 0.5 second \n")
         task.wait(.5)
 
+        TimeOut()
         Restart()
         CollectCircuits()
 
