@@ -50,6 +50,44 @@ function AutoFarm()
 
     local function GotoRoom()
         if workspace:FindFirstChild("Room") and Character and Character:FindFirstChild("HumanoidRootPart") then
+
+            if workspace["Room"]:FindFirstChild("ShopType") and workspace["Room"]["ShopType"].Value == "Vault" then
+                if workspace["Room"]["Items"]:FindFirstChild("Golden Circuit") then
+                    local child = workspace["Room"]["Items"]["Golden Circuit"]
+
+                    workspace["InvisiblePart"].CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
+                    Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
+
+                    consolePrint("Debug: Take "..child.Name.." in vault \n")
+
+                    fireclickdetector(child:FindFirstChildOfClass("ClickDetector"))
+                    task.wait(.05)
+                    fireclickdetector(child:FindFirstChildOfClass("ClickDetector"))
+                    task.wait(.350)
+                else
+                    local function GetRandomTool()
+                        local path = workspace["Room"]["Items"]:GetChildren()
+                        local number = math.random(1, #path)
+
+                        for i,v in ipairs(path) do
+                            if i == number then return v end
+                        end
+                    end
+
+                    local child = GetRandomTool()
+
+                    workspace["InvisiblePart"].CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
+                    Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
+
+                    consolePrint("Debug: Take "..child.Name.." in vault \n")
+
+                    fireclickdetector(child:FindFirstChildOfClass("ClickDetector"))
+                    task.wait(.05)
+                    fireclickdetector(child:FindFirstChildOfClass("ClickDetector"))
+                end
+                task.wait(.350)
+            end
+
             consolePrint("Debug: Teleport to room \n")
             local Floor = workspace["Room"].Floor
             workspace["InvisiblePart"].CFrame =CFrame.new(Floor.CFrame.X, Floor.CFrame.Y + 30, Floor.CFrame.Z + 30)
