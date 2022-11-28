@@ -171,14 +171,16 @@ function AutoFarm()
 
     local function Killaura()
         local function KillEnemy(mob)
-            task.wait(.1)
+            task.wait(.2)
 
             if mob:FindFirstChildOfClass("Humanoid") and Players:GetPlayerFromCharacter(mob) == nil and Character and Character:FindFirstChild("HumanoidRootPart") then
                 local Timeout = true
 
-                mob:FindFirstChild("HumanoidRootPart").Destroying:Connect(function()
-                    Timeout = false
-                end)
+                if mob:FindFirstChild("HumanoidRootPart") then
+                    mob:FindFirstChild("HumanoidRootPart").Destroying:Connect(function()
+                        Timeout = false
+                    end)
+                end
 
                 task.wait(.05)
 
@@ -194,7 +196,7 @@ function AutoFarm()
                     local PANIC = game:GetService("ReplicatedStorage").PANIC
                     PANIC:FireServer()
 
-                    task.wait(.1380)
+                    task.wait(.140)
 
                     GotoRoom()
                 end)
