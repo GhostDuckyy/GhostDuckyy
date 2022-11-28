@@ -145,7 +145,7 @@ function AutoFarm()
             local PointsTally = game:GetService("Workspace").GenValues.PointsTally
             local RoomNumber = game:GetService("Workspace").GenValues.RoomNumber
 
-            consolePrint("--> Gained "..tostring(PointsTally.Value).." Points, Reached "..tostring(RoomNumber.Value).." Room \n")
+            consolePrint("\n --> Gained "..tostring(PointsTally.Value).." Points, Reached "..tostring(RoomNumber.Value).." Room \n")
 
             Setting.AutoFarm = false
             if not Setting.AutoRestart then return end
@@ -217,7 +217,7 @@ function AutoFarm()
 
         while true do if game:IsLoaded() then break; end task.wait(.1) end
 
-        if Character == nil then consolePrint("Debug: Wait Character \n") LocalPlayer.CharacterAppearanceLoaded:Wait() end
+        if Character == nil then consolePrint("Debug: Wait CharacterAdded \n"); LocalPlayer.CharacterAdded:Wait(); task.wait(.5) end
 
         if not workspace:FindFirstChild("InvisiblePart") then local Part = Instance.new("Part", workspace); Part.Name = "InvisiblePart"; Part.Anchored = true; Part.Size = Vector3.new(10, 1, 10); Part.CFrame = CFrame.new(0, -100, 0); Part.Transparency = 0.5; end
 
