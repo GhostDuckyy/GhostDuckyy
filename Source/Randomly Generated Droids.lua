@@ -172,7 +172,7 @@ function AutoFarm()
     local function TimeOut()
         task.spawn(function()
             local RoomValue = game:GetService("Workspace").GenValues.RoomNumber.Value
-            local oldRoomValue = 0
+            local oldRoomValue = -1
             while true do
                 if Character then
                     if oldRoomValue == RoomValue then
