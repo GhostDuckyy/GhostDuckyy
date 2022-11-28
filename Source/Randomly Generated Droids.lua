@@ -26,45 +26,13 @@ function AutoFarm()
         clear()
     end
 
-    local function Killaura()
-        local function KillEnemy(mob)
-            task.wait(.1)
-
-            if mob:FindFirstChildOfClass("Humanoid") and Players:GetPlayerFromCharacter(mob) == nil and Character and Character:FindFirstChild("HumanoidRootPart") then
-                consolePrint("Debug: Target = ".. tostring(mob.Name) .."\n")
-                consolePrint("Debug: Set Target MaxHealth = 0 \n")
-                mob:FindFirstChildOfClass("Humanoid").MaxHealth = 0
-                consolePrint("Debug: Set Target Health = 0 \n")
-                mob:FindFirstChildOfClass("Humanoid").Health = -1
-
-                task.spawn(function()
-                    task.wait(8.5)
-                    if mob ~= nil and mob:FindFirstChild("HumanoidRootPart") and Character and Character:FindFirstChild("HumanoidRootPart") then
-                        consolePrint("Debug: Detected a timeout \n")
-                        local Panic = game:GetService("ReplicatedStorage").PANIC
-                        Panic:FireServer()
-
-                        workspace["InvisiblePart"].CFrame = Character.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0)
-                        task.wait(.1)
-                        Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
-                    end
-                end)
-            end
-        end
-
-        if workspace:FindFirstChild("Room") and workspace["Room"]:FindFirstChild("Enemies") then
-            for i,v in ipairs(workspace["Room"]["Enemies"]:GetChildren()) do
-                KillEnemy(v)
-            end
-        end
-    end
-
     local function CollectCircuits()
         local function Collect(child)
             task.wait(1)
+
             if child:FindFirstChild("Pay") and child.Pay:IsA("IntValue") and Character and Character:FindFirstChild("HumanoidRootPart") then
                 firetouchinterest(Character.HumanoidRootPart, child, 0)
-                task.wait(.5)
+                task.wait(.350)
                 firetouchinterest(Character.HumanoidRootPart, child, 1)
             end
         end
@@ -104,7 +72,7 @@ function AutoFarm()
                 for x,y in ipairs(child.Parent:GetChildren()) do
                     if y:FindFirstChild("Base") and y:FindFirstChild("Activator") then
                         consolePrint("Debug: Move box to plate \n")
-                        child["Box"].CFrame = CFrame.new(y["Activator"].CFrame.X, y["Activator"].CFrame.Y + 1.5, y["Activator"].CFrame.Z)
+                        child["Box"].CFrame = CFrame.new(y["Activator"].CFrame.X, y["Activator"].CFrame.Y + 2.5, y["Activator"].CFrame.Z)
                     end
                 end
             end
@@ -143,6 +111,46 @@ function AutoFarm()
         end
     end
 
+    local function Killaura()
+        local function KillEnemy(mob)
+            task.wait(.1)
+
+            if mob:FindFirstChildOfClass("Humanoid") and Players:GetPlayerFromCharacter(mob) == nil and Character and Character:FindFirstChild("HumanoidRootPart") then
+                local Timeout = true
+
+                mob:FindFirstChild("HumanoidRootPart").Destroying:Connect(function()
+                    Timeout = false
+                end)
+
+                task.wait(.05)
+
+                consolePrint("Debug: Target = ".. tostring(mob.Name) .."\n")
+                if mob:FindFirstChildOfClass("Humanoid") then consolePrint("Debug: Set Target MaxHealth = 0 \n"); mob:FindFirstChildOfClass("Humanoid").MaxHealth = 0; consolePrint("Debug: Set Target Health = 0 \n"); mob:FindFirstChildOfClass("Humanoid").Health = -100; end
+                if mob:FindFirstChild("HumanoidRootPart") then consolePrint("Debug: Set target RootPart BreakJoint \n"); mob:FindFirstChild("HumanoidRootPart"):BreakJoints(); end
+
+                task.spawn(function()
+                    task.wait(10)
+                    if not Timeout then return end
+
+                    consolePrint("Detect a timeout \n")
+
+                    local PANIC = game:GetService("ReplicatedStorage").PANIC
+                    PANIC:FireServer()
+
+                    task.wait(.1380)
+
+                    GotoRoom()
+                end)
+            end
+        end
+
+        if workspace:FindFirstChild("Room") and workspace["Room"]:FindFirstChild("Enemies") then
+            for i,v in ipairs(workspace["Room"]["Enemies"]:GetChildren()) do
+                KillEnemy(v)
+            end
+        end
+    end
+
     task.spawn(function()
         ClearConsole()
         if not Setting.AutoFarm or game.PlaceId ~= 6312903733 then return end
@@ -154,7 +162,7 @@ function AutoFarm()
 
         if Character == nil then consolePrint("Debug: Wait Character \n") LocalPlayer.CharacterAppearanceLoaded:Wait() end
 
-        if not workspace:FindFirstChild("InvisiblePart") then local Part = Instance.new("Part", workspace); Part.Name = "InvisiblePart"; Part.Anchored = true; Part.Size = Vector3.new(10, 1, 10); Part.CFrame = CFrame.new(0, -100, 0);Part.Transparency = 0.5; end
+        if not workspace:FindFirstChild("InvisiblePart") then local Part = Instance.new("Part", workspace); Part.Name = "InvisiblePart"; Part.Anchored = true; Part.Size = Vector3.new(10, 1, 10); Part.CFrame = CFrame.new(0, -100, 0); Part.Transparency = 0.5; end
 
         consolePrint("--> AutoFarm will start in 0.5 second \n")
         task.wait(.5)
