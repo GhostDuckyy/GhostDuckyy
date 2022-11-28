@@ -51,6 +51,19 @@ function AutoFarm()
     local function GotoRoom()
         if workspace:FindFirstChild("Room") and Character and Character:FindFirstChild("HumanoidRootPart") then
 
+            local function RemoveTrap()
+                local path = workspace["Room"]:GetChildren()
+
+                for i,v in ipairs(path) do
+                    if v.Name:lower():find("lava") and v:FindFirstChildOfClass("TouchInterest") then
+                        consolePrint("Removed "..v.Name.." in Room \n")
+                        v:Destroy()
+                    end
+                end
+            end
+
+            RemoveTrap()
+
             if workspace["Room"]:FindFirstChild("ShopType") and workspace["Room"]["ShopType"].Value == "Vault" then
                 if workspace["Room"]["Items"]:FindFirstChild("Golden Circuit") then
                     local child = workspace["Room"]["Items"]["Golden Circuit"]
@@ -66,11 +79,13 @@ function AutoFarm()
                     task.wait(.350)
                 else
                     local function GetRandomTool()
-                        local path = workspace["Room"]["Items"]:GetChildren()
-                        local number = math.random(1, #path)
+                        if workspace["Room"]["Items"]:FindFirstChildOfClass("Tool") then
+                            local path = workspace["Room"]["Items"]:GetChildren()
+                            local number = math.random(1, #path)
 
-                        for i,v in ipairs(path) do
-                            if i == number then return v end
+                            for i,v in ipairs(path) do
+                                if i == number and v ~= nil then return v end
+                            end
                         end
                     end
 
@@ -127,6 +142,11 @@ function AutoFarm()
         local GuiEvent = game:GetService("ReplicatedStorage").GuiEvent
 
         LocalPlayer.Character.Humanoid.Died:Connect(function()
+            local PointsTally = game:GetService("Workspace").GenValues.PointsTally
+            local RoomNumber = game:GetService("Workspace").GenValues.RoomNumber
+
+            consolePrint("--> Gained "..tostring(PointsTally.Value).." Points, Reached "..tostring(RoomNumber.Value).." Room \n")
+
             Setting.AutoFarm = false
             if not Setting.AutoRestart then return end
             consolePrint("--> Detected died, Restart in 0.5 second \n\n")
