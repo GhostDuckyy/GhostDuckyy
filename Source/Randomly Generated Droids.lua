@@ -49,20 +49,7 @@ function AutoFarm()
     end
 
     local function GotoRoom()
-        if workspace:FindFirstChild("Room") and Character and Character:FindFirstChild("HumanoidRootPart") then
-
-            local function RemoveTrap()
-                local path = workspace["Room"]:GetChildren()
-
-                for i,v in ipairs(path) do
-                    if v.Name:lower():find("lava") and v:FindFirstChildOfClass("TouchInterest") then
-                        consolePrint("Removed "..v.Name.." in Room \n")
-                        v:Destroy()
-                    end
-                end
-            end
-
-            RemoveTrap()
+        if workspace:FindFirstChild("Room") and workspace["Room"]:WaitForChild("Floor", 10) and Character and Character:FindFirstChild("HumanoidRootPart") then
 
             if workspace["Room"]:FindFirstChild("ShopType") and workspace["Room"]["ShopType"].Value == "Vault" then
                 if workspace["Room"]["Items"]:FindFirstChild("Golden Circuit") then
@@ -201,7 +188,7 @@ function AutoFarm()
                         end
                     else
                         oldRoomValue = RoomValue
-                        task.wait(8)
+                        task.wait(10)
                     end
                 end
                 task.wait(.1)
