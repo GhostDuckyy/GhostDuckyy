@@ -72,7 +72,7 @@ function AutoFarm()
                 for x,y in ipairs(child.Parent:GetChildren()) do
                     if y:FindFirstChild("Base") and y:FindFirstChild("Activator") then
                         consolePrint("Debug: Move box to plate \n")
-                        child["Box"].CFrame = CFrame.new(y["Activator"].CFrame.X, y["Activator"].CFrame.Y + 2.5, y["Activator"].CFrame.Z)
+                        child["Box"].CFrame = CFrame.new(y["Activator"].CFrame.X, y["Activator"].CFrame.Y + 2, y["Activator"].CFrame.Z)
                     end
                 end
             end
