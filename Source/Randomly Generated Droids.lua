@@ -42,7 +42,7 @@ function AutoFarm()
                 Collect(v)
             end
 
-            workspace.ChildAdded:Connect(function(child)
+            workspace.DescendantAdded:Connect(function(child)
                 Collect(child)
             end)
         end)
@@ -126,7 +126,6 @@ function AutoFarm()
 
                 consolePrint("Debug: Target = ".. tostring(mob.Name) .."\n")
                 if mob:FindFirstChildOfClass("Humanoid") then consolePrint("Debug: Set Target MaxHealth = 0 \n"); mob:FindFirstChildOfClass("Humanoid").MaxHealth = 0; consolePrint("Debug: Set Target Health = 0 \n"); mob:FindFirstChildOfClass("Humanoid").Health = -100; end
-                if mob:FindFirstChild("HumanoidRootPart") then consolePrint("Debug: Set target RootPart BreakJoint \n"); mob:FindFirstChild("HumanoidRootPart"):BreakJoints(); end
 
                 task.spawn(function()
                     task.wait(10)
@@ -174,11 +173,11 @@ function AutoFarm()
 
             Killaura()
 
-            task.wait(.350)
+            task.wait(.5)
 
             ActiveButton()
 
-            task.wait(.350)
+            task.wait(.5)
 
             GotoRoom()
 
