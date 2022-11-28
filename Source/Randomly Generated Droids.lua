@@ -172,12 +172,33 @@ function AutoFarm()
     local function TimeOut()
         task.spawn(function()
             local RoomValue = game:GetService("Workspace").GenValues.RoomNumber.Value
-            local oldRoomValue = -1
+            local oldRoomValue = 0
             while true do
                 if Character then
-                    if oldRoomValue == RoomValue then
+                    if oldRoomValue == RoomValue and RoomValue > 0 then
                         local Humanoid = Character:FindFirstChild("Humanoid")
-                        if Humanoid then consolePrint("Detect Error!"); Humanoid.Health = -1; break; end
+                        if Humanoid then
+                            consolePrint("Detect Error!")
+                            Humanoid.Health = -1
+                            if not Setting.AutoRestart then
+                                local GuiEvent = game:GetService("ReplicatedStorage").GuiEvent
+                                GuiEvent:FireServer("Restart")
+
+                                local source = [=[
+                                    task.wait(1)
+                                    loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Source/Randomly%20Generated%20Droids.lua"))()
+                                ]=]
+
+                                if syn then
+                                    syn.queue_on_teleport(source)
+                                else
+                                    local unc = queue_on_teleport or queueonteleport
+                                    unc(source)
+                                end
+
+                            end
+                            break;
+                        end
                     else
                         oldRoomValue = RoomValue
                         task.wait(8)
