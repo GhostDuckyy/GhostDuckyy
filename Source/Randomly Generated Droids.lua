@@ -56,7 +56,7 @@ function AutoFarm()
     end
 
     local function GotoRoom()
-        if workspace:FindFirstChild("Room") and workspace["Room"]:WaitForChild("Floor", 10) and Character and Character:FindFirstChild("HumanoidRootPart") then
+        if workspace:WaitForChild("Room", 15) and workspace["Room"]:WaitForChild("Floor", 15) and Character and Character:FindFirstChild("HumanoidRootPart") then
 
             if workspace["Room"]:FindFirstChild("ShopType") and workspace["Room"]["ShopType"].Value == "Vault" then
                 if workspace["Room"]["Items"]:FindFirstChild("Golden Circuit") then
