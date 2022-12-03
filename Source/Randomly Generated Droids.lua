@@ -209,10 +209,10 @@ function AutoFarm()
                     end)
                 end
 
-                task.wait(.05)
+                task.wait(.1)
 
                 consolePrint("Debug: Target = ".. tostring(mob.Name) .."\n")
-                if mob:FindFirstChildOfClass("Humanoid") then consolePrint("Debug: Set Target MaxHealth = 0 \n"); mob:FindFirstChildOfClass("Humanoid").MaxHealth = 0; consolePrint("Debug: Set Target Health = 0 \n"); mob:FindFirstChildOfClass("Humanoid").Health = -1; end
+                if mob:FindFirstChildOfClass("Humanoid") then consolePrint("Debug: Set Target WalkSpeed = 0 \n"); mob:FindFirstChildOfClass("Humanoid").WalkSpeed = 0; consolePrint("Debug: Set Target Health = 0 \n"); mob:FindFirstChildOfClass("Humanoid").Health = 0; end
 
                 task.spawn(function()
                     task.wait(8)
@@ -252,6 +252,10 @@ function AutoFarm()
 
         consolePrint("--> AutoFarm will start in 0.5 second \n")
         task.wait(.5)
+
+        task.spawn(function()
+            if setsimulationradius then setsimulationradius(math.huge, math.huge) end
+        end)
 
         TimeOut()
         Restart()
