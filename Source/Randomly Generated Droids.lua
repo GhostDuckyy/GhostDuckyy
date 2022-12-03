@@ -3,10 +3,13 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character
 
-getgenv().Setting = shared.Setting or {
-    AutoFarm = true,
-    AutoRestart = true,
-}
+if getgenv().Setting == nil or typeof(getgenv().Setting) ~= "table" then
+    getgenv().Setting = {
+        AutoFarm = true,
+        AutoRestart = true,
+    }
+end
+
 --// Source
 function AutoFarm()
     local function consolePrint(string)
@@ -17,8 +20,9 @@ function AutoFarm()
      end
 
     local function CreateConsole()
+        local LastUpdateDate = "3/12/2022"
         local create = rconsolecreate or consolecreate or false
-        if not create then consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/28/2022 \n\n") return else create(); task.wait(.5); consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/27/2022 \n\n"); return end
+        if not create then consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: "..LastUpdateDate.." Day/Month/Year \n\n") return else create(); task.wait(.5); consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/27/2022 \n\n"); return end
     end
 
     local function ClearConsole()
