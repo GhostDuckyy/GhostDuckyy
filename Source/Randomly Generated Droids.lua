@@ -173,7 +173,7 @@ function AutoFarm()
                         local Humanoid = Character:FindFirstChild("Humanoid")
                         if Humanoid then
                             consolePrint("Detect Error!")
-                            Humanoid.Health = -1
+                            Humanoid.Health = 0
                             if not Setting.AutoRestart then
                                 local GuiEvent = game:GetService("ReplicatedStorage").GuiEvent
                                 GuiEvent:FireServer("Restart")
