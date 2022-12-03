@@ -62,8 +62,8 @@ function AutoFarm()
                 if workspace["Room"]["Items"]:FindFirstChild("Golden Circuit") then
                     local child = workspace["Room"]["Items"]["Golden Circuit"]
 
-                    workspace["InvisiblePart"].CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
-                    Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
+                    getgenv().InvisiblePart.CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
+                    Character.HumanoidRootPart.CFrame = getgenv().InvisiblePart.CFrame * CFrame.new(0, 1, 0)
 
                     consolePrint("Debug: Take "..child.Name.." in vault \n")
 
@@ -85,8 +85,8 @@ function AutoFarm()
 
                     local child = GetRandomTool()
 
-                    workspace["InvisiblePart"].CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
-                    Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
+                    getgenv().InvisiblePart.CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
+                    Character.HumanoidRootPart.CFrame = getgenv().InvisiblePart.CFrame * CFrame.new(0, 1, 0)
 
                     consolePrint("Debug: Take "..child.Name.." in vault \n")
 
@@ -99,8 +99,8 @@ function AutoFarm()
 
             consolePrint("Debug: Teleport to room \n")
             local Floor = workspace["Room"]:WaitForChild("Floor", 10)
-            workspace["InvisiblePart"].CFrame =CFrame.new(Floor.CFrame.X, Floor.CFrame.Y + 30, Floor.CFrame.Z + 30)
-            Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
+            getgenv().InvisiblePart.CFrame = CFrame.new(Floor.CFrame.X, Floor.CFrame.Y + 30, Floor.CFrame.Z + 30)
+            Character.HumanoidRootPart.CFrame = getgenv().InvisiblePart.CFrame * CFrame.new(0, 1, 0)
         end
     end
 
@@ -108,8 +108,8 @@ function AutoFarm()
         local function Active(child)
             if child:FindFirstChildOfClass("ClickDetector") and Character and Character:FindFirstChild("HumanoidRootPart") then
 
-                workspace["InvisiblePart"].CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
-                Character.HumanoidRootPart.CFrame = workspace["InvisiblePart"].CFrame * CFrame.new(0, 1, 0)
+                getgenv().InvisiblePart.CFrame = CFrame.new(child.CFrame.X, child.CFrame.Y + 2, child.CFrame.Z)
+                Character.HumanoidRootPart.CFrame = getgenv().InvisiblePart.CFrame * CFrame.new(0, 1, 0)
 
                 consolePrint("Debug: Active Button \n")
 
@@ -179,6 +179,7 @@ function AutoFarm()
                                 GuiEvent:FireServer("Restart")
 
                                 local source = [=[
+                                    getgenv().InvisiblePart = nil
                                     task.wait(1)
                                     loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Source/Randomly%20Generated%20Droids.lua"))()
                                 ]=]
@@ -195,7 +196,7 @@ function AutoFarm()
                         end
                     else
                         oldRoomValue = RoomValue
-                        task.wait(10)
+                        task.wait(8)
                     end
                 end
                 task.wait(.1)
@@ -230,7 +231,7 @@ function AutoFarm()
                     local PANIC = game:GetService("ReplicatedStorage").PANIC
                     PANIC:FireServer()
 
-                    task.wait(.140)
+                    task.wait(.1450)
 
                     GotoRoom()
                 end)
@@ -255,7 +256,7 @@ function AutoFarm()
 
         if Character == nil then consolePrint("Debug: Wait CharacterAdded \n"); LocalPlayer.CharacterAdded:Wait(); task.wait(.5) end
 
-        if not workspace:FindFirstChild("InvisiblePart") then local Part = Instance.new("Part", workspace); Part.Name = "InvisiblePart"; Part.Anchored = true; Part.Size = Vector3.new(10, 1, 10); Part.CFrame = CFrame.new(0, -100, 0); Part.Transparency = 0.5; end
+        if getgenv().InvisiblePart == nil or typeof(getgenv().InvisiblePart) ~= "Instance" then local Part = Instance.new("Part", workspace); getgenv().InvisiblePart = Part; Part.Name = math.random(123456, 999999); Part.Anchored = true; Part.Size = Vector3.new(10, 1, 10); Part.CFrame = CFrame.new(0, -100, 0); Part.Transparency = 0.5; Part.Color = Color3.new(1, 0, 0); consolePrint("Debug: Created 'Part' \n"); end
 
         consolePrint("--> AutoFarm will start in 0.5 second \n")
         task.wait(.5)
