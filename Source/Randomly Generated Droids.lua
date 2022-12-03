@@ -7,12 +7,14 @@ if getgenv().Setting == nil or typeof(getgenv().Setting) ~= "table" then
     getgenv().Setting = {
         AutoFarm = true,
         AutoRestart = true,
+        DebugConsole = false,
     }
 end
 
 --// Source
 function AutoFarm()
     local function consolePrint(string)
+        if not Setting.DebugConsole then return end
         if string == nil then string = "\n" end
         string = tostring(string)
          local Print = rconsoleprint or consoleprint or function(input) warn("Missing 'rconsoleprint' / 'consoleprint' function") end
@@ -26,6 +28,7 @@ function AutoFarm()
     end
 
     local function ClearConsole()
+        if not Setting.DebugConsole then local destroy = rconsoleclose or rconsoledestroy; destroy() return end
         local clear = rconsoleclear or consoleclear
         clear()
     end
@@ -245,7 +248,7 @@ function AutoFarm()
         ClearConsole()
         if not Setting.AutoFarm or game.PlaceId ~= 6312903733 then return end
 
-        CreateConsole()
+        if Setting.DebugConsole then CreateConsole() end
         if not game:IsLoaded() then consolePrint("Debug: Waiting game loaded \n") end
 
         while true do if game:IsLoaded() then break; end task.wait(.1) end
