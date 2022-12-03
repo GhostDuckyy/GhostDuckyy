@@ -196,7 +196,7 @@ function AutoFarm()
                         end
                     else
                         oldRoomValue = RoomValue
-                        task.wait(8)
+                        task.wait(12)
                     end
                 end
                 task.wait(.1)
