@@ -30,8 +30,8 @@ function AutoFarm()
     end
 
     local function ClearConsole()
-        if not Setting.DebugConsole then local destroy = rconsoleclose or rconsoledestroy; destroy() return end
         local clear = rconsoleclear or consoleclear
+        if not Setting.DebugConsole then clear(); local destroy = rconsoleclose or rconsoledestroy; destroy(); return end
         clear()
     end
 
