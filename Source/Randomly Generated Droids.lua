@@ -5,9 +5,11 @@ local Character = LocalPlayer.Character
 
 if getgenv().Setting == nil or typeof(getgenv().Setting) ~= "table" then
     getgenv().Setting = {
-        AutoFarm = true,
-        AutoRestart = true,
-        DebugConsole = false,
+        GameMode = "Normal", --// Noraml | Casual
+        WebhookUrl = "nil", --// Replace your webhook url here
+        AutoFarm = true, --// Auto farm toggle
+        AutoRestart = true, --// Auto restart when character died
+        DebugConsole = false, --// Show a console
     }
 end
 
@@ -22,7 +24,7 @@ function AutoFarm()
      end
 
     local function CreateConsole()
-        local LastUpdateDate = "3/12/2022"
+        local LastUpdateDate = "5/12/2022"
         local create = rconsolecreate or consolecreate or false
         if not create then consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: "..LastUpdateDate.." Day/Month/Year \n\n") return else create(); task.wait(.5); consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/27/2022 \n\n"); return end
     end
@@ -132,6 +134,32 @@ function AutoFarm()
         end
     end
 
+    local function WebHook(t, url)
+        if t == nil or typeof(t) ~= "table" then return end
+        if url == nil or url == "nil" or typeof(t) ~= "string" then return end
+
+        local function check_url(str)
+            if str == nil then return end
+            if typeof(str) ~= "string" then str = tostring(str) end
+
+            if string.match(str:lower(), "https://discord.com/api/webhooks") then
+                return true
+            end
+
+            return false
+        end
+
+        local HttpService = game:GetService("HttpService")
+
+        local request = (syn and syn.request) or request or (http and http.request) or http_request or false
+        local json = HttpService:JSONEncode(t)
+        local headers = {["content-type"] = "application/json"}
+
+        if check_url(url) and request then
+            request({Url = url, Body = json, Method = "POST", Headers = headers})
+        end
+    end
+
     local function Restart()
         local GuiEvent = game:GetService("ReplicatedStorage").GuiEvent
 
@@ -143,12 +171,29 @@ function AutoFarm()
 
             Setting.AutoFarm = false
             if not Setting.AutoRestart then return end
+
+            local data = {
+                ["content"] = nil,
+                ["embeds"] = {
+                    ["description"] = "Autofarm Status",
+                    ["color"] = 57599,
+                    ["fields"] = {
+                        {["name"] = "Room", ["value"] = tostring(RoomNumber.Value)},
+                        {["name"] = "Points", ["value"] = tostring(PointsTally.Value)},
+                    },
+                    ["author"] = {["name"] = "Randomly Generated Droids",["url"] = "https://www.roblox.com/games/5561268850/"},
+                    ["footer"] = {"Made by Ghost-Ducky#7698"},
+                }
+            }
+            WebHook(data, Setting.WebhookUrl)
+
             consolePrint("--> Detected died, Restart in 0.5 second \n\n")
             task.wait(.5)
             GuiEvent:FireServer("Restart")
         end)
 
         local source = [=[
+            getgenv().InvisiblePart = nil
             task.wait(1)
             loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Source/Randomly%20Generated%20Droids.lua"))()
         ]=]
@@ -175,6 +220,28 @@ function AutoFarm()
                             consolePrint("Detect Error!")
                             Humanoid.Health = 0
                             if not Setting.AutoRestart then
+                                local PointsTally = game:GetService("Workspace").GenValues.PointsTally
+                                local RoomNumber = game:GetService("Workspace").GenValues.RoomNumber
+
+                                consolePrint("\n --> Gained "..tostring(PointsTally.Value).." Points, Reached "..tostring(RoomNumber.Value).." Room \n")
+
+                                local data = {
+                                    ["content"] = nil,
+                                    ["embeds"] = {
+                                        ["description"] = "Autofarm Status",
+                                        ["color"] = 57599,
+                                        ["fields"] = {
+                                            {["name"] = "Room", ["value"] = tostring(RoomNumber.Value)},
+                                            {["name"] = "Points", ["value"] = tostring(PointsTally.Value)},
+                                        },
+                                        ["author"] = {["name"] = "Randomly Generated Droids",["url"] = "https://www.roblox.com/games/5561268850/"},
+                                        ["footer"] = {"Made by Ghost-Ducky#7698"},
+                                    }
+                                }
+                                WebHook(data, Setting.WebhookUrl)
+
+                                consolePrint("--> Detect a bug/stuck, Restart in 0.5 second \n\n")
+                                task.wait(.5)
                                 local GuiEvent = game:GetService("ReplicatedStorage").GuiEvent
                                 GuiEvent:FireServer("Restart")
 
@@ -245,9 +312,23 @@ function AutoFarm()
         end
     end
 
+    local function CreateMatch(mode)
+        if mode == nil then return end
+        if typeof(mode) ~= "string" then mode = tostring(mode) end
+        mode = mode:lower()
+
+        local AscensionNum = 0
+
+        if mode == "normal" then
+            
+        elseif mode == "casual" then
+        end
+    end
+
     task.spawn(function()
         ClearConsole()
         if not Setting.AutoFarm or game.PlaceId ~= 6312903733 then return end
+        -- if game.PlaceId == 5561268850 then CreateMatch(Setting.GameMode) return elseif game.PlaceId ~= 6312903733 then return end
 
         if Setting.DebugConsole then CreateConsole() end
         if not game:IsLoaded() then consolePrint("Debug: Waiting game loaded \n") end
