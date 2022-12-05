@@ -24,6 +24,7 @@ function AutoFarm()
      end
 
     local function CreateConsole()
+        if not Setting.DebugConsole then return end
         local LastUpdateDate = "5/12/2022"
         local create = rconsolecreate or consolecreate or false
         if not create then consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: "..LastUpdateDate.." Day/Month/Year \n\n") return else create(); task.wait(.5); consolePrint("--> Made by Ghost-Ducky#7698 | Last Update: 11/27/2022 \n\n"); return end
@@ -31,7 +32,10 @@ function AutoFarm()
 
     local function ClearConsole()
         local clear = rconsoleclear or consoleclear
-        if not Setting.DebugConsole then clear(); local destroy = rconsoleclose or rconsoledestroy; destroy(); return end
+        local destroy = rconsoleclose or rconsoledestroy or function()
+            print("Missing Function")
+        end
+        if not Setting.DebugConsole then clear(); task.wait(.1); destroy(); return end
         clear()
     end
 
@@ -136,13 +140,13 @@ function AutoFarm()
 
     local function WebHook(t, url)
         if t == nil or typeof(t) ~= "table" then return end
-        if url == nil or url == "nil" or typeof(t) ~= "string" then return end
+        if url == nil or url == "nil" or typeof(url) ~= "string" then return end
 
         local function check_url(str)
             if str == nil then return end
             if typeof(str) ~= "string" then str = tostring(str) end
 
-            if string.match(str:lower(), "https://discord.com/api/webhooks") then
+            if string.match(str:lower(), "https://discord.com/api/webhooks/") then
                 return true
             end
 
@@ -153,9 +157,9 @@ function AutoFarm()
 
         local request = (syn and syn.request) or request or (http and http.request) or http_request or false
         local json = HttpService:JSONEncode(t)
-        local headers = {["content-type"] = "application/json"}
+        local headers = {["Content-type"] = "application/json"}
 
-        if check_url(url) and request then
+        if check_url(url) and request ~= false then
             request({Url = url, Body = json, Method = "POST", Headers = headers})
         end
     end
