@@ -50,6 +50,26 @@ main:AddSwitch("Clean poo", function(x)
     if x then task.spawn(function() for i,v in ipairs(workspace:GetChildren()) do if v:IsA("Model") and v.Name == "Poo" and v:FindFirstChild("PooBase") then if Character then Character.HumanoidRootPart.CFrame = CFrame.new(v.PooBase.CFrame.X, v.PooBase.CFrame.Y + 5, v.PooBase.CFrame.Z - 1.5) task.wait(.150) fireproximityprompt(v:FindFirstChildOfClass("ProximityPrompt")) task.wait(.350) end end end end) end
 end)
 
+misc:AddLabel("Made by Ghost-Ducky#7698")
+misc:AddLabel("UI made by Singularity#5490")
+
+local _WalkSpeedSlider = misc:AddSlider("Walkspeed", function(x)
+    if Character then
+        Character.Humanoid.WalkSpeed = tonumber(x)
+    end
+end,{["min"] = 16, ["max"] = 100,})
+
+_WalkSpeedSlider:Set(16)
+
+local _JumpPowerSlider = misc:AddSlider("Jumppower", function(x)
+    if Character then
+        Character.Humanoid.JumpPower = tonumber(x)
+    end
+end,{["min"] = 50, ["max"] = 100,})
+
+_JumpPowerSlider:Set(50)
+
+
 
 --// Function
 function getNoob()
@@ -88,9 +108,9 @@ end
 
 function PlaceFood()
     local function checkFood()
-        if Character and Character:FindFirstChild("Noob Food") then
+        if Character and Character:FindFirstChild("Enhanced Noob Food") or Character:FindFirstChild("Noob Food") then
             return true
-        elseif LocalPlayer.Backpack:FindFirstChild("Noob Food") then
+        elseif LocalPlayer.Backpack:FindFirstChild("Enhanced Noob Food") or LocalPlayer.Backpack:FindFirstChild("Noob Food") then
             return true
         end
         return false
@@ -98,7 +118,9 @@ function PlaceFood()
 
     local function BuyFood()
         local Bobux = workspace["Bobux"]
-        if Bobux.Value > 25 then
+        if Bobux.Value > 125 then
+            game:GetService("ReplicatedStorage").BuyEvent:InvokeServer("narket", 1, "Enhanced Noob Food")
+        elseif Bobux.Value > 25 then
             game:GetService("ReplicatedStorage").BuyEvent:InvokeServer("narket", 1, "Noob Food")
         end
     end
@@ -110,18 +132,19 @@ function PlaceFood()
                 if Character then
                     if Dish.Filled.Value ~= true then
                         if checkFood() then
-                            if LocalPlayer.Backpack:FindFirstChild("Noob Food") then Character.Humanoid:EquipTool(LocalPlayer.Backpack["Noob Food"]) end
-                            Character.HumanoidRootPart.CFrame = CFrame.new(Dish.CFrame.X, Dish.CFrame.Y + 3, Dish.CFrame.Z)
+                            if LocalPlayer.Backpack:FindFirstChild("Enhanced Noob Food") then Character.Humanoid:EquipTool(LocalPlayer.Backpack["Enhanced Noob Food"]) elseif LocalPlayer.Backpack:FindFirstChild("Noob Food") then Character.Humanoid:EquipTool(LocalPlayer.Backpack["Noob Food"]) end
+                            Character.HumanoidRootPart.CFrame = CFrame.new(Dish.CFrame.X, Dish.CFrame.Y + 3.5, Dish.CFrame.Z)
                             task.wait(.2)
                             fireproximityprompt(Dish:FindFirstChildOfClass("ProximityPrompt"))
-                            task.wait(.5)
+                            task.wait(1)
                         else
                             BuyFood()
+                            task.wait(.2)
                         end
                     end
                 end
             end
-            task.wait(.5)
+            task.wait(.1)
         end
     end)
 end
@@ -169,3 +192,19 @@ CollectBobux()
 CleanPoo()
 
 main:Show()
+
+task.spawn(function()
+    local get_rawmt = getrawmetatable(game)
+    local old_index = get_rawmt.__index;
+    setreadonly(get_rawmt, false)
+    get_rawmt.__index = newcclosure(function(self,value)
+        if tostring(value):lower() == "walkspeed" then
+            return 16
+        end
+        if tostring(value):lower() == "jumppower" then
+            return 50
+        end
+        return old_index(self,value)
+    end)
+    setreadonly(get_rawmt, true)
+end)
