@@ -827,16 +827,6 @@ local checks = {
 	["binding"] = false,
 }
 
-UIS.InputBegan:Connect(function(input, gameProcessed)
-	if input.KeyCode == (ui_options.toggle_key or Enum.KeyCode.RightShift) then
-		if script.Parent then
-			if not checks.binding then
-				script.Parent.Enabled = not script.Parent.Enabled
-			end
-		end
-	end
-end)
-
 local function Resize(part, new, _delay)
 	_delay = _delay or 0.5
 	local tweenInfo = TweenInfo.new(_delay, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
@@ -949,6 +939,17 @@ function library:FormatWindows()
 end
 
 function library:AddWindow(title, options)
+
+    UIS.InputBegan:Connect(function(input, gameProcessed)
+        if input.KeyCode == ((typeof(options.toggle_key) == "EnumItem") and options.toggle_key or Enum.KeyCode.RightShift) then
+            if script.Parent then
+                if not checks.binding then
+                    script.Parent.Enabled = not script.Parent.Enabled
+                end
+            end
+        end
+    end)
+    
 	windows = windows + 1
 	local dropdown_open = false
 	title = tostring(title or "New Window")
