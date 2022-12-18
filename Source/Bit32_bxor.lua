@@ -2,6 +2,9 @@
 local module = {}
 
 function module:encrypt(str, key)
+    if (str == nil or key == nil) then return warn("Insert source / key") end
+    str = tostring(str); key = tostring(key)
+
     local encrypted = ""
     for i = 1, #str do
       local char = string.byte(str, i)
