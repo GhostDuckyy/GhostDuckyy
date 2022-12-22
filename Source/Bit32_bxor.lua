@@ -1,4 +1,4 @@
---// Encrytion Made by 502#8277
+--// Encrytion Method made by 502#8277
 local module = {}
 
 function module:encrypt(str, key)
