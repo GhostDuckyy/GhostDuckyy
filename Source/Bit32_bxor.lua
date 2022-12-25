@@ -15,7 +15,7 @@ function module:encrypt(str, key)
 end
 
 function module:decrypt(str, key)
-    return encrypt(str, key)
+    return module:encrypt(str, key)
 end
 
 return module
