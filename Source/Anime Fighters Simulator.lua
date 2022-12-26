@@ -16,12 +16,14 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character
 
+local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 local VirtualUser = game:GetService("VirtualUser")
 
 getgenv().Setting = {
     CollectDrop = false,
-    Daily = {Ticket = false, Spin = false, Gift = false,Merchant = false,},
+    Stars = {AutoPurchase = false, StarsList = {}, SelectedStars = nil, TargetStars = nil, TargetWorld = nil,},
+    Claim = {Ticket = false, Spin = false, Gift = false,Merchant = false,},
     AutoFarm = {Enabled = false, MobSelected = nil, TargetSelected = nil, EnemiesList = {"Click to Refresh List"}, Height = false,},
     Client = {WalkSpeed = 16, JumpPower = 50},
 }
@@ -64,7 +66,7 @@ function AutoFarm()
             if Setting.AutoFarm.Height then HumanoidRootPart.CFrame = EnemiesHRP.CFrame else HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, -5, 0) end
             Teleported:Fire()
             task.wait(.1)
-            if Setting.AutoFarm.Height then HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, 20, 0) else HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, -20, 0) end
+            if Setting.AutoFarm.Height then HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, 20, 0) else HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, -18, 0) end
             HumanoidRootPart.Anchored = true
         elseif bool and Setting.AutoFarm.TargetSelected == nil and Character then
             local HumanoidRootPart = Character.HumanoidRootPart
@@ -153,24 +155,24 @@ function CollectDrop()
     end)
 end
 
-function ClaimDaily(mode)
+function ClaimStuff(mode)
     if mode == "Ticket" then
         task.spawn(function()
-            while Setting.Daily.Ticket do
+            while Setting.Claim.Ticket do
                 game:GetService("ReplicatedStorage").Remote.ClaimTicket:FireServer()
                 task.wait(1)
             end
         end)
     elseif mode == "Spin" then
         task.spawn(function()
-            while Setting.Daily.Spin do
+            while Setting.Claim.Spin do
                 game:GetService("ReplicatedStorage").Remote.DailySpin:FireServer()
                 task.wait(1)
             end
         end)
     elseif mode == "Merchant" then
         task.spawn(function()
-            while Setting.Daily.Merchant do
+            while Setting.Claim.Merchant do
                 game:GetService("ReplicatedStorage").Remote.ClaimBoost:FireServer()
                 task.wait(1)
             end
@@ -178,7 +180,7 @@ function ClaimDaily(mode)
     elseif mode == "Gift" then
         task.spawn(function()
             local Number = 1
-            while Setting.Daily.Gift do
+            while Setting.Claim.Gift do
                 if Number > 16 then Number = 1 end
                 game:GetService("ReplicatedStorage").Remote.ClaimGift:FireServer(Number)
                 Number = Number + 1
@@ -186,6 +188,63 @@ function ClaimDaily(mode)
             end
         end)
     end
+end
+
+function AutoPurchase()
+    local function getWorld()
+        if Setting.Stars.SelectedStars ~= nil then
+            for _,v in ipairs(workspace.Worlds:GetChildren()) do
+                if v:FindFirstChild(Setting.Stars.SelectedStars) then
+                    local Stars = v[Setting.Stars.SelectedStars]
+                    return v
+                end
+            end
+        end
+        return nil
+    end
+
+    task.spawn(function()
+        local AttemptTravel = game:GetService("ReplicatedStorage").Remote.AttemptTravel
+        local Teleported = game:GetService("ReplicatedStorage").Bindable.Teleported
+        local OpenEgg = game:GetService("ReplicatedStorage").Remote.OpenEgg
+        local SetTargetEgg = game:GetService("ReplicatedStorage").Bindable.SetTargetEgg
+
+        local IsTeleported = false
+        local Old_Target = nil
+
+        while Setting.Stars.AutoPurchase do
+            if Setting.Stars.TargetWorld == nil then Setting.Stars.TargetWorld = getWorld() end
+            if Setting.Stars.TargetWorld ~= nil then Setting.Stars.TargetStars = Setting.Stars.TargetWorld[Setting.Stars.SelectedStars] end
+            Old_Target = Setting.Stars.SelectedStars
+
+            while Setting.Stars.AutoPurchase do
+                if Setting.Stars.SelectedStars ~= Old_Target then break end
+                if Setting.Stars.TargetWorld ~= nil and Setting.Stars.TargetStars ~= nil and Character then
+                    local HumanoidRootPart = Character.HumanoidRootPart
+
+                    if Setting.Stars.TargetStars:FindFirstChild("Stand") then HumanoidRootPart.CFrame = Setting.Stars.TargetStars.Stand.CFrame * CFrame.new(0, 1, 6.5) end
+
+                    if tostring(LocalPlayer.World.Value) == tostring(Setting.Stars.TargetWorld.Name) then OpenEgg:InvokeServer(Setting.Stars.TargetStars, 5) else AttemptTravel:InvokeServer(tostring(Setting.Stars.TargetWorld.Name)); SetTargetEgg:Fire(Setting.Stars.SelectedStars) end
+                    if not IsTeleported then
+                        task.spawn(function()
+                            IsTeleported = true
+                            Teleported:Fire()
+                            task.wait(1)
+                            HumanoidRootPart.Anchored = true
+                        end)
+                    end
+                end
+                task.wait(.250)
+            end
+
+            IsTeleported = false
+            Old_Target = nil
+            Setting.Stars.TargetWorld = nil
+            Setting.Stars.TargetStars = nil
+
+            task.wait(.5)
+        end
+    end)
 end
 
 --// Source
@@ -223,46 +282,115 @@ auto:NewDropdown("Height", "Top/Buttom on mob", {"Top", "Bottom"}, function(v)
     end
 end)
 
+local stars = w:NewTab("Stars") do
+    stars = stars:NewSection("Automatic")
 
-local misc = w:NewTab("Misc")
-local client = misc:NewSection("Client")
+    local EggModule = require(game:GetService("ReplicatedStorage").ModuleScripts.EggStats) do
+        for i,v in next, (EggModule) do
+            if i ~= "MultiOpen" and i ~= "Unknown" then
+                if rawget(v, "DisplayName") and not rawget(v, "Currency") then
+                    if not table.find(Setting.Stars.StarsList, tostring(v.DisplayName)) then table.insert(Setting.Stars.StarsList, tostring(v.DisplayName)) end
+                end
+            end
+        end
+    end
 
-client:NewTextBox("Set fps cap", "Must unlocked fps", function(v)
-    if type(v) ~= "number" then v = tonumber(v) end
-    if setfpscap then setfpscap(v) end
-end)
+    stars:NewDropdown("Stars List", "Select a stars to open", Setting.Stars.StarsList, function(DisplayName)
+        for StarsName, Table in next, (EggModule) do
+            if tostring(StarsName) ~= "MultiOpen" and tostring(StarsName) ~= "Unknown" then
+                if rawget(Table, "DisplayName") and not rawget(Table, "Currency") then
+                    if Table.DisplayName == DisplayName then
+                        Setting.Stars.SelectedStars = tostring(StarsName)
+                    end
+                end
+            end
+        end
+    end)
 
-client:NewSlider("WalkSpeed", "Modify client walkspeed", 200, 16, function(x)
-    Setting.Client.WalkSpeed = tonumber(x)
-end)
+    stars:NewToggle("Auto purchase stars", "Auto purchase selected star", function(v)
+        Setting.Stars.AutoPurchase = v
 
-client:NewSlider("JumpPower", "Modify client jumppower", 200, 50, function(x)
-    Setting.Client.JumpPower = tonumber(x)
-end)
+        if v then
+            AutoPurchase()
+        else
+            if Character then
+                local HumanoidRootPart = Character.HumanoidRootPart
+                HumanoidRootPart.Anchored = false
+            end
+        end
+    end)
 
-client:NewLabel("Daily / Weekly")
+    stars:NewLabel("NOTE: if not working then re-enable auto purchase")
+    stars:NewLabel([[¯\_(ツ)_/¯ i will fix bug in this week]])
+end
 
-client:NewToggle("Claim Daily Gift", "Auto claim daily gift", function(v)
-    Setting.Daily.Gift = v
-    if v then ClaimDaily("Gift") end
-end)
 
-client:NewToggle("Claim Raid Ticket", "Auto claim daily raid ticket", function(v)
-    Setting.Daily.Ticket = v
-    if v then ClaimDaily("Ticket") end
-end)
+local misc = w:NewTab("Misc")do
+    local credit = misc:NewSection("Made by Ghost-Ducky#7698")
+    credit:NewTextBox("Set fps cap", "Must unlocked fps", function(v)
+        if type(v) ~= "number" then v = tonumber(v) end
+        if setfpscap then setfpscap(v) end
+    end)
+end
 
-client:NewToggle("Claim Spin Wheel", "Auto claim daily spin wheel", function(v)
-    Setting.Daily.Spin = v
-    if v then ClaimDaily("Spin") end
-end)
+local menu = misc:NewSection("Menu") do
+    local SetWindowOpen = LocalPlayer.PlayerGui.MainGui.SetWindowOpen
+    local AttemptOpenGate = game:GetService("ReplicatedStorage").Bindable.AttemptOpenGate
+    local AttemptDiscoverWorld = game:GetService("ReplicatedStorage").Remote.AttemptDiscoverWorld
 
-client:NewToggle("Claim Merchant Boost", "Auto claim weekly merchant boost", function(v)
-    Setting.Daily.Merchant = v
-    if v then ClaimDaily("Merchant") end
-end)
+    menu:NewButton("Teleport Menu", "Show teleport menu", function()
+        SetWindowOpen:Fire("Travel", true)
+    end)
 
-client:NewLabel("Made by Ghost-Ducky#7698")
+    menu:NewButton("Purchase Gate", "Purchase current world gate if haven't bought", function()
+        local WorldGate = workspace.Worlds[LocalPlayer.World.Value]:FindFirstChild("WorldGate")
+        if WorldGate ~= nil and not WorldGate.Open.Value then
+            AttemptOpenGate:Fire(WorldGate, true)
+            task.wait(.2)
+            AttemptDiscoverWorld:FireServer(WorldGate.TargetWorld.Value)
+            task.wait(.2)
+            AttemptOpenGate:Fire(WorldGate, false)
+        end
+    end)
+end
+
+local client = misc:NewSection("Client") do
+
+    client:NewTextBox("Set fps cap", "Must unlocked fps", function(v)
+        if type(v) ~= "number" then v = tonumber(v) end
+        if setfpscap then setfpscap(v) end
+    end)
+
+    client:NewSlider("WalkSpeed", "Modify client walkspeed", 200, 16, function(x)
+        Setting.Client.WalkSpeed = tonumber(x)
+    end)
+
+    client:NewSlider("JumpPower", "Modify client jumppower", 200, 50, function(x)
+        Setting.Client.JumpPower = tonumber(x)
+    end)
+
+    client:NewLabel("Daily / Weekly")
+
+    client:NewToggle("Claim Daily Gift", "Auto claim daily gift", function(v)
+        Setting.Claim.Gift = v
+        if v then ClaimStuff("Gift") end
+    end)
+
+    client:NewToggle("Claim Raid Ticket", "Auto claim daily raid ticket", function(v)
+        Setting.Claim.Ticket = v
+        if v then ClaimStuff("Ticket") end
+    end)
+
+    client:NewToggle("Claim Spin Wheel", "Auto claim daily spin wheel", function(v)
+        Setting.Claim.Spin = v
+        if v then ClaimStuff("Spin") end
+    end)
+
+    client:NewToggle("Claim Merchant Boost", "Auto claim weekly merchant boost", function(v)
+        Setting.Claim.Merchant = v
+        if v then ClaimStuff("Merchant") end
+    end)
+end
 
 --// Setup
 do
