@@ -122,12 +122,11 @@ function Farm()
             if Character == nil then LocalPlayer.CharacterAppearanceLoaded:Wait() end
             if not workspace:FindFirstChild("PlatForm") then local plat = Instance.new("Part", workspace); plat.Name = "PlatForm"; plat.Anchored = true; plat.CFrame = CFrame.new(math.random(1000,5000),math.random(1000,2500),math.random(1000,5000)); plat.Size = Vector3.new(100, 1, 100); task.wait(.5) end
             if LocalPlayer.Team == game:GetService("Teams").Train then
-                Character.HumanoidRootPart.Anchored = false
-                task.wait(.2)
-                Character.HumanoidRootPart.CFrame = workspace.PlatForm.CFrame * CFrame.new(0,4,0)
-                task.wait(.2)
-                Character.HumanoidRootPart.Anchored = true
-                repeat task.wait(.05) until LocalPlayer.Team ~= game:GetService("Teams").Train
+                if not Character.HumanoidRootPart.Anchored then
+                    Character.HumanoidRootPart.CFrame = workspace.PlatForm.CFrame * CFrame.new(0,4,0)
+                    task.wait(.2)
+                    Character.HumanoidRootPart.Anchored = true
+                end
             end
             if LocalPlayer.Team == game:GetService("Teams").Station then Character.HumanoidRootPart.Anchored = false end
             task.wait(.1)
