@@ -60,13 +60,14 @@ function AutoFarm()
         if bool and Character and Setting.AutoFarm.TargetSelected ~= nil and Setting.AutoFarm.TargetSelected:FindFirstChild("HumanoidRootPart") then
             local HumanoidRootPart = Character.HumanoidRootPart
             local EnemiesHRP = Setting.AutoFarm.TargetSelected.HumanoidRootPart
+            local Water = workspace.Worlds[LocalPlayer.World.Value]:FindFirstChild("Water")
 
-            if HumanoidRootPart.Anchored == true then HumanoidRootPart.Anchored = false end
+            HumanoidRootPart.Anchored = false
 
             if Setting.AutoFarm.Height then HumanoidRootPart.CFrame = EnemiesHRP.CFrame else HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, -5, 0) end
             Teleported:Fire()
             task.wait(.1)
-            if Setting.AutoFarm.Height then HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, 20, 0) else HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, -18, 0) end
+            if Setting.AutoFarm.Height then HumanoidRootPart.CFrame = EnemiesHRP.CFrame * CFrame.new(0, 20, 0) else HumanoidRootPart.CFrame = CFrame.new(EnemiesHRP.CFrame.X, Water.CFrame.Y + 8, EnemiesHRP.CFrame.Z) end
             HumanoidRootPart.Anchored = true
         elseif bool and Setting.AutoFarm.TargetSelected == nil and Character then
             local HumanoidRootPart = Character.HumanoidRootPart
@@ -75,13 +76,9 @@ function AutoFarm()
             local Water = workspace.Worlds[LocalPlayer.World.Value]:FindFirstChild("Water")
 
             if Water ~= nil then
-                HumanoidRootPart.CFrame = CFrame.new(Water.CFrame.X + math.random(30, 180), Water.CFrame.Y + 5, Water.CFrame.Z + math.random(30, 180))
+                HumanoidRootPart.CFrame = CFrame.new(Water.CFrame.X + math.random(30, 120), Water.CFrame.Y + 5, Water.CFrame.Z + math.random(30, 120))
                 Teleported:Fire()
                 HumanoidRootPart.Anchored = true
-
-                while Setting.AutoFarm.Enabled do if Setting.AutoFarm.TargetSelected == nil then getgenv().Status:UpdateLabel("Status: Waiting mob spawn"); Setting.AutoFarm.TargetSelected = GetEnemies() else break end task.wait(.1) end
-
-                if Setting.AutoFarm.Enabled then MoveTo(true) else MoveTo(false) end
             end
         elseif not bool and Character then
             if Character then
@@ -90,7 +87,7 @@ function AutoFarm()
                 HumanoidRootPart.Anchored = false
 
                 if not Setting.AutoFarm.Height then
-                    HumanoidRootPart.CFrame = HumanoidRootPart.CFrame * CFrame.new(0, 25, 0)
+                    HumanoidRootPart.CFrame = HumanoidRootPart.CFrame * CFrame.new(0, 20, 0)
                 end
                 Teleported:Fire()
             end
@@ -100,35 +97,42 @@ function AutoFarm()
     if Setting.AutoFarm.Enabled then
         task.spawn(function()
             local SendPet = game:GetService("ReplicatedStorage").Bindable.SendPet
-            Old_Height = Setting.AutoFarm.Height
+            local ClickerDamage = game:GetService("ReplicatedStorage").Remote.ClickerDamage
+            local Old_Height = Setting.AutoFarm.Height
             MaxHealth = 100
+            IsTeleported = false
 
             Setting.AutoFarm.TargetSelected = nil
             while Setting.AutoFarm.Enabled do
                 if Setting.AutoFarm.MobSelected ~= nil then
-                    if Setting.AutoFarm.TargetSelected == nil then Setting.AutoFarm.TargetSelected = GetEnemies() end
+                    if Setting.AutoFarm.TargetSelected == nil then IsTeleported = false; Setting.AutoFarm.TargetSelected = GetEnemies(); getgenv().Status:UpdateLabel("Status: Finding mob") end
+                    if Setting.AutoFarm.TargetSelected ~= nil then
+                        if Setting.AutoFarm.TargetSelected.Parent.Name == "Effects" then
+                            Setting.AutoFarm.TargetSelected = nil
+                            getgenv().Status:UpdateLabel("Status: "..Setting.AutoFarm.MobSelected.." | Health: 0%")
+                        else
+                            if not IsTeleported then MoveTo(true); IsTeleported = true end
+                            if Setting.AutoFarm.TargetSelected:FindFirstChild("MaxHealth") ~= nil and Setting.AutoFarm.TargetSelected.MaxHealth.Value ~= MaxHealth then MaxHealth = Setting.AutoFarm.TargetSelected.MaxHealth.Value end
+                            if Setting.AutoFarm.Height ~= Old_Height then MoveTo(true) end
 
-                    MoveTo(true)
-                    while Setting.AutoFarm.Enabled do
-                        if (Setting.AutoFarm.TargetSelected == nil or (Setting.AutoFarm.TargetSelected ~= nil and Setting.AutoFarm.TargetSelected.Parent ~= nil and Setting.AutoFarm.TargetSelected.Parent.Name ~= "Enemies")) then getgenv().Status:UpdateLabel("Status: "..Setting.AutoFarm.MobSelected.." | Health: 0%") break end
-                        if Setting.AutoFarm.TargetSelected.DisplayName.Value ~= Setting.AutoFarm.MobSelected then break end
-                        if Setting.AutoFarm.Height ~= Old_Height then Old_Height = Setting.AutoFarm.Height; MoveTo(true) end
-                        if MaxHealth ~= Setting.AutoFarm.TargetSelected.MaxHealth.Value then MaxHealth = tonumber(Setting.AutoFarm.TargetSelected.MaxHealth.Value) end
+                            SendPet:Fire(Setting.AutoFarm.TargetSelected, true)
+                            ClickerDamage:FireServer()
 
-                        local Health = Setting.AutoFarm.TargetSelected.Health.Value
-                        local percentage = math.ceil((Health / MaxHealth) * 100)
+                            local Health = Setting.AutoFarm.TargetSelected:FindFirstChild("Health")
+                            if Health ~= nil then
+                                Health = Health.Value
+                                local Calculate = tostring(math.ceil(Health / MaxHealth * 100))
+                                getgenv().Status:UpdateLabel("Status: "..Setting.AutoFarm.MobSelected.." | Health: "..Calculate.."%")
+                            end
 
-                        game:GetService("ReplicatedStorage").Remote.ClickerDamage:FireServer()
-                        SendPet:Fire(Setting.AutoFarm.TargetSelected, true)
-                        getgenv().Status:UpdateLabel("Status: "..Setting.AutoFarm.MobSelected.." | Health: "..tostring(percentage.."%"))
-
-                        task.wait(.1)
+                            if Setting.AutoFarm.TargetSelected:FindFirstChild("DisplayName") ~= nil and Setting.AutoFarm.TargetSelected.DisplayName.Value ~= Setting.AutoFarm.MobSelected then Setting.AutoFarm.TargetSelected = nil end
+                        end
                     end
-                    Setting.AutoFarm.TargetSelected = nil
+
                 else
                     getgenv().Status:UpdateLabel("Status: Select a mob")
                 end
-                task.wait(.350)
+                task.wait(.05)
             end
         end)
     else
@@ -224,11 +228,12 @@ function AutoPurchase()
 
                     if Setting.Stars.TargetStars:FindFirstChild("Stand") then HumanoidRootPart.CFrame = Setting.Stars.TargetStars.Stand.CFrame * CFrame.new(0, 1, 6.5) end
 
-                    if tostring(LocalPlayer.World.Value) == tostring(Setting.Stars.TargetWorld.Name) then OpenEgg:InvokeServer(Setting.Stars.TargetStars, 5) else AttemptTravel:InvokeServer(tostring(Setting.Stars.TargetWorld.Name)); SetTargetEgg:Fire(Setting.Stars.SelectedStars) end
+                    if tostring(LocalPlayer.World.Value) == tostring(Setting.Stars.TargetWorld.Name) then OpenEgg:InvokeServer(Setting.Stars.TargetStars, 5) else AttemptTravel:InvokeServer(tostring(Setting.Stars.TargetWorld.Name)) end
                     if not IsTeleported then
                         task.spawn(function()
                             IsTeleported = true
                             Teleported:Fire()
+                            SetTargetEgg:Fire(Setting.Stars.SelectedStars)
                             task.wait(1)
                             HumanoidRootPart.Anchored = true
                         end)
