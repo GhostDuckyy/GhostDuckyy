@@ -198,8 +198,7 @@ function AutoPurchase()
     local function getWorld()
         if Setting.Stars.SelectedStars ~= nil then
             for _,v in ipairs(workspace.Worlds:GetChildren()) do
-                if v:FindFirstChild(Setting.Stars.SelectedStars) then
-                    local Stars = v[Setting.Stars.SelectedStars]
+                if v:FindFirstChild(Setting.Stars.SelectedStars) ~= nil then
                     return v
                 end
             end
@@ -211,43 +210,47 @@ function AutoPurchase()
         local AttemptTravel = game:GetService("ReplicatedStorage").Remote.AttemptTravel
         local Teleported = game:GetService("ReplicatedStorage").Bindable.Teleported
         local OpenEgg = game:GetService("ReplicatedStorage").Remote.OpenEgg
-        local SetTargetEgg = game:GetService("ReplicatedStorage").Bindable.SetTargetEgg
 
-        local IsTeleported = false
-        local Old_Target = nil
+        Old_Target = Setting.Stars.SelectedStars
+
+        Setting.Stars.TargetWorld = nil
+        Setting.Stars.TargetStars = nil
 
         while Setting.Stars.AutoPurchase do
-            if Setting.Stars.TargetWorld == nil then Setting.Stars.TargetWorld = getWorld() end
-            if Setting.Stars.TargetWorld ~= nil then Setting.Stars.TargetStars = Setting.Stars.TargetWorld[Setting.Stars.SelectedStars] end
-            Old_Target = Setting.Stars.SelectedStars
+            if Setting.Stars.SelectedStars ~= nil then
+                if Setting.Stars.TargetWorld == nil then Setting.Stars.TargetWorld = getWorld() end
+                if Setting.Stars.TargetWorld ~= nil and Setting.Stars.TargetStars == nil then Setting.Stars.TargetStars = Setting.Stars.TargetWorld:FindFirstChild(Setting.Stars.SelectedStars) end
 
-            while Setting.Stars.AutoPurchase do
-                if Setting.Stars.SelectedStars ~= Old_Target then break end
-                if Setting.Stars.TargetWorld ~= nil and Setting.Stars.TargetStars ~= nil and Character then
+                if Character then
                     local HumanoidRootPart = Character.HumanoidRootPart
 
-                    if Setting.Stars.TargetStars:FindFirstChild("Stand") then HumanoidRootPart.CFrame = Setting.Stars.TargetStars.Stand.CFrame * CFrame.new(0, 1, 6.5) end
+                    if Setting.Stars.TargetWorld ~= nil and Setting.Stars.TargetStars ~= nil then
+                        if Setting.Stars.SelectedStars ~= Old_Target then
+                            HumanoidRootPart.Anchored = false
+                            Old_Target = Setting.Stars.SelectedStars
+                            Setting.Stars.TargetWorld = nil
+                            Setting.Stars.TargetStars = nil
+                        else
+                            if Setting.Stars.TargetWorld ~= nil and Setting.Stars.TargetStars ~= nil then
 
-                    if tostring(LocalPlayer.World.Value) == tostring(Setting.Stars.TargetWorld.Name) then OpenEgg:InvokeServer(Setting.Stars.TargetStars, 5) else AttemptTravel:InvokeServer(tostring(Setting.Stars.TargetWorld.Name)) end
-                    if not IsTeleported then
-                        task.spawn(function()
-                            IsTeleported = true
-                            Teleported:Fire()
-                            SetTargetEgg:Fire(Setting.Stars.SelectedStars)
-                            task.wait(1)
-                            HumanoidRootPart.Anchored = true
-                        end)
+                                AttemptTravel:InvokeServer(tostring(Setting.Stars.TargetWorld.Name))
+                                if Setting.Stars.TargetStars:FindFirstChild("Stand") ~= nil then
+                                    if not HumanoidRootPart.Anchored then
+                                        HumanoidRootPart.CFrame = Setting.Stars.TargetStars.Stand.CFrame * CFrame.new(0, 1, 6.5)
+                                        task.wait(1)
+                                        HumanoidRootPart.CFrame = Setting.Stars.TargetStars.Stand.CFrame * CFrame.new(0, 1, 6.5)
+                                        HumanoidRootPart.Anchored = true
+                                        Teleported:Fire()
+                                    end
+                                    AttemptTravel:InvokeServer(tostring(Setting.Stars.TargetWorld.Name))
+                                    OpenEgg:InvokeServer(Setting.Stars.TargetStars, 5)
+                                end
+                            end
+                        end
                     end
                 end
-                task.wait(.250)
             end
-
-            IsTeleported = false
-            Old_Target = nil
-            Setting.Stars.TargetWorld = nil
-            Setting.Stars.TargetStars = nil
-
-            task.wait(.5)
+            task.wait(.1)
         end
     end)
 end
@@ -353,7 +356,7 @@ local menu = misc:NewSection("Menu") do
             AttemptOpenGate:Fire(WorldGate, true)
             task.wait(.2)
             AttemptDiscoverWorld:FireServer(WorldGate.TargetWorld.Value)
-            task.wait(.2)
+            task.wait(.05)
             AttemptOpenGate:Fire(WorldGate, false)
         end
     end)
