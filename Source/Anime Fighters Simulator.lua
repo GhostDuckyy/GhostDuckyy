@@ -113,7 +113,7 @@ function AutoFarm()
                         else
                             if not IsTeleported then MoveTo(true); IsTeleported = true end
                             if Setting.AutoFarm.TargetSelected:FindFirstChild("MaxHealth") ~= nil and Setting.AutoFarm.TargetSelected.MaxHealth.Value ~= MaxHealth then MaxHealth = Setting.AutoFarm.TargetSelected.MaxHealth.Value end
-                            if Setting.AutoFarm.Height ~= Old_Height then MoveTo(true) end
+                            if Setting.AutoFarm.Height ~= Old_Height then Old_Height = Setting.AutoFarm.Height; MoveTo(true) end
 
                             SendPet:Fire(Setting.AutoFarm.TargetSelected, true)
                             ClickerDamage:FireServer()
