@@ -155,12 +155,12 @@ function AutoFarm()
 
         local HttpService = game:GetService("HttpService")
 
-        local request = (syn and syn.request) or request or (http and http.request) or http_request or false
+        local Request = (syn and syn.request) or request or (http and http.request) or http_request or false
         local json = HttpService:JSONEncode(t)
         local headers = {["Content-type"] = "application/json"}
 
         if check_url(url) and request ~= false then
-            request({Url = url, Body = json, Method = "POST", Headers = headers})
+            Request({Url = url, Body = json, Method = "POST", Headers = headers})
         end
     end
 
