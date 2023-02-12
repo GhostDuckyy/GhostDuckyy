@@ -469,6 +469,8 @@ do
 		local container = self.container.Main
 		local topbar = container.TopBar
 		
+		if (container == nil or topbar == nil) then return end
+		
 		if self.position then
 			utility:Tween(container, {
 				Size = UDim2.new(0, 511, 0, 428),
