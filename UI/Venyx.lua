@@ -503,7 +503,7 @@ do
 	
 	-- new modules
 	
-	function library:Notify(title, text, callback)
+	function library:Notify(title, text, time, callback)
 	
 		-- overwrite last notification
 		if self.activeNotification then
@@ -660,6 +660,18 @@ do
 			end
 			
 			close()
+		end)
+		
+		task.spawn(function()
+			if (time and type(time) == "number") then
+				wait(tonumber(time))
+
+				if not active then
+					return
+				end
+
+				close()
+			end
 		end)
 	end
 	
