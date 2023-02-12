@@ -218,8 +218,9 @@ do
 		}, {
 			utility:Create("ImageLabel", {
 				Name = "Main",
+				AnchorPoint = Vector2.new(0.5, 0.5),
 				BackgroundTransparency = 1,
-				Position = UDim2.new(0.25, 0, 0.052435593, 0),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
 				Size = UDim2.new(0, 511, 0, 428),
 				Image = "rbxassetid://4641149554",
 				ImageColor3 = themes.Background,
@@ -469,7 +470,7 @@ do
 		local container = self.container.Main
 		local topbar = container.TopBar
 		
-		if (container == nil or topbar == nil) then return end
+		if self.container == nil then return end
 		
 		if self.position then
 			utility:Tween(container, {
