@@ -467,10 +467,10 @@ do
 		
 		self.toggling = true
 		
+		if (self.container.Main == nil) then return end
+		
 		local container = self.container.Main
 		local topbar = container.TopBar
-		
-		if self.container == nil then return end
 		
 		if self.position then
 			utility:Tween(container, {
