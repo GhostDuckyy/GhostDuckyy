@@ -613,7 +613,9 @@ do
 		local active = true
 		local close = function()
 			
-			if (self.container == nil) then return end
+			if notification and notification:FindFirstChild("Flash") == nil then
+				return
+			end
 		
 			if not active then
 				return
