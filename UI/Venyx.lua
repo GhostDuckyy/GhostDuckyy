@@ -612,6 +612,8 @@ do
 		-- callbacks
 		local active = true
 		local close = function()
+			
+			if (self.container == nil) then return end
 		
 			if not active then
 				return
