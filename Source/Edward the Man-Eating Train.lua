@@ -1,6 +1,6 @@
 --// Made by Ghost-Ducky#7698
 while true do if game:IsLoaded() and game.PlaceId == 10875701453 then break; end task.wait(.1); end
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/Ui-Librarys/main/Valiant/source.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Valiant/source.lua"))()
 local Window = Library:CreateWindow("GUI", "Ghost-Ducky#7698", 10044538000)
 
 local section = Window:CreateTab("Section")
