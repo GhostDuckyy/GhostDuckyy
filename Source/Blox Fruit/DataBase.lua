@@ -730,13 +730,13 @@ function Data.requestQuest(value)
         for i2, v2 in next, (v) do
             if (value >= v2.LowestLevel and v2.MaxLevel > value) then
                 getgenv().Setting.Farm.MobName = v2.Enemy
-                return i, i2, v2.Count
+                return i, i2, v2.LowestLevel, v2.Count
             end
         end
     end
 
     getgenv().Setting.Farm.MobName = nil
-    return false, false, false
+    return false, false, false, false
 end
 
 function Data.requestBoss(value, check)
@@ -749,11 +749,11 @@ function Data.requestBoss(value, check)
                     if type(check) == "boolean" and check == true then
                         if LocalPlayer:WaitForChild("Data", 5):WaitForChild("Level", 5).Value >= v2.LowestLevel then
                             getgenv().Setting.Farm.MobName = v2.Enemy
-                            return i, i2, 1
+                            return i, i2, v2.LowestLevel, 1
                         end
                     else
                         getgenv().Setting.Farm.MobName = v2.Enemy
-                        return i, i2, 1
+                        return i, i2, v2.LowestLevel, 1
                     end
                 end
             end
@@ -764,12 +764,12 @@ function Data.requestBoss(value, check)
                 if type(check) == "boolean" and check == true then
                     if value >= v2.LowestLevel then
                         getgenv().Setting.Farm.MobName = v2.Enemy
-                        return i, i2, 1
+                        return i, i2, v2.LowestLevel, 1
                     end
                 else
                     if value == v2.LowestLevel then
                         getgenv().Setting.Farm.MobName = v2.Enemy
-                        return i, i2, 1
+                        return i, i2, v2.LowestLevel, 1
                     end
                 end
             end
@@ -778,7 +778,7 @@ function Data.requestBoss(value, check)
     end
 
     getgenv().Setting.Farm.MobName = nil
-    return false, false, 1
+    return false, false, false, 1
 end
 
 return Data
