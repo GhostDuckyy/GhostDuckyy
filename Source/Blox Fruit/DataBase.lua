@@ -26,7 +26,7 @@ Data.Quests = {
             MaxLevel = 15,
         },
         {
-            Enemy = " Gorilla",
+            Enemy = "Gorilla",
             Count = 8,
             LowestLevel = 15,
             MaxLevel = 30,
