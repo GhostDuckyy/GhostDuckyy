@@ -1,7 +1,7 @@
 --// Made by Ghost-Ducky#7698
 while true do if game:IsLoaded() then break; end task.wait(.1) end
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/ImGui/Elerium%20V2/source.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/UI/Elerium%20V2.lua"))()
 local w = Library:AddWindow("Raise a noob [GUI]", {
     main_color = Color3.fromRGB(200, 0, 0),
 	min_size = Vector2.new(450, 400),
