@@ -1,5 +1,5 @@
 ## About me
-I am a lego game exploiter also a scripter in lego game.
+Scripter?
 
 ## Contact me
 `Ghost-Ducky#7698` | **Discord**
