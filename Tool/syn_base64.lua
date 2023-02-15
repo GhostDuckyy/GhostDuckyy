@@ -23,7 +23,7 @@ if syn then
       local obfuscated = tostring("local a = {"..'"'..encoded..'"'.."}; local b = loadstring(game:HttpGet('"..url.."'))(); local c = b:decode(unpack(a)); loadstring(c)()")
       
       local time = (startTick - tick())
-      print("Done obfuscation in ".."ticks")
+      warn("Done obfuscation in "..time.."ticks")
       
       if setclipboard then setclipboard(obfuscated) end
       return obfuscated
