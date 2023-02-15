@@ -19,6 +19,7 @@ if syn then
         if str ~= nil then str = tostring(str) end
         local startTick = tick()
         local encoded = '"'..tostring(Module:encode(str))..'"'
+        local len = string.len(encoded)
         local url = "https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Tool/syn_base64.lua"
 
         local variable = {
@@ -28,8 +29,8 @@ if syn then
         }
 
         local fake_encoded = {
-            [1] = '"'..encoded(tostring(math.random(#str, #str * 1.2)))..'"',
-            [2] = '"'..encoded(tostring(math.random(#str, #str * 1.5)))..'"',
+            [1] = '"'..Module:encode(tostring(math.random(len, len * 1.2)))..'"',
+            [2] = '"'..Module:encode(tostring(math.random(len, len * 1.5)))..'"',
         }
 
         local obfuscated = "return(function() local "..variable[1].." = {"..fake_encoded[1]..", "..encoded..", "..fake_encoded[2].."}; local "..variable[2].." = loadstring(game:HttpGet('"..url.."'))(); local "..variable[3].." = "..variable[2]..":decode("..variable[1].."[2]); loadstring("..variable[3]..")() end)()"
