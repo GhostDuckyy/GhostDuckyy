@@ -20,7 +20,14 @@ if syn then
         local startTick = tick()
         local encoded = tostring(Module:encode(str))
         local url = "https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Tool/syn_base64.lua"
-        local obfuscated = "return(function() local a = {"..'"'..encoded..'"'.."}; local b = loadstring(game:HttpGet('"..url.."'))(); local c = b:decode(unpack(a)); loadstring(c)() end)()"
+
+        local variable = {
+            [1] = tostring("u_"..math.random(100,999)),
+            [2] = tostring("u_"..math.random(100,999)),
+            [3] = tostring("u_"..math.random(100,999)),
+        }
+
+        local obfuscated = "return(function() local "..variable[1].." = {"..'"'..encoded..'"'.."}; local "..variable[2].." = loadstring(game:HttpGet('"..url.."'))(); local "..variable[3].." = "..variable[2]..":decode(unpack("..variable[1]..")); loadstring("..variable[3]..")() end)()"
         obfuscated = tostring(obfuscated)
 
         local time = (startTick - tick())
