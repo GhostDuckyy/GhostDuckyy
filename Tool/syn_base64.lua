@@ -18,7 +18,7 @@ if syn then
 
    function Module:obfuscate(str)
       local encoded = tostring(Module:encode(str))
-      local url = ""
+      local url = "https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Tool/syn_base64.lua"
       local obfuscated = tostring("local a = {"..'"'..encoded..'"'.."}; local b = loadstring(game:HttpGet('"..url.."'))(); local c = b:decode(unpack(a)); loadstring(c)()")
       return obfuscated
    end
