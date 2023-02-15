@@ -17,10 +17,15 @@ if syn then
    end
 
    function Module:obfuscate(str)
+      local startTick = tick()
       local encoded = tostring(Module:encode(str))
       local url = "https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Tool/syn_base64.lua"
       local obfuscated = tostring("local a = {"..'"'..encoded..'"'.."}; local b = loadstring(game:HttpGet('"..url.."'))(); local c = b:decode(unpack(a)); loadstring(c)()")
-      if setclipboard then  setclipboard(obfuscated) end
+      
+      local time = (startTick - tick())
+      print("Done obfuscation in ".."ticks")
+      
+      if setclipboard then setclipboard(obfuscated) end
       return obfuscated
    end
 
