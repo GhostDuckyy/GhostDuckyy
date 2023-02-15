@@ -17,8 +17,9 @@ if syn then
    end
 
    function Module:obfuscate(str)
-      local encoded = Module:encode(str)
-      local obfuscated = tostring("local a = {"..'"'..encoded..'"'.."}; local b = loadstring(game:HttpGet(''))(); local c = b:decode(unpack(a)); loadstring(c)()")
+      local encoded = tostring(Module:encode(str))
+      local url = ""
+      local obfuscated = tostring("local a = {"..'"'..encoded..'"'.."}; local b = loadstring(game:HttpGet('"..url.."'))(); local c = b:decode(unpack(a)); loadstring(c)()")
       return obfuscated
    end
 
