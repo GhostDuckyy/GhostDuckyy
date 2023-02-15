@@ -62,7 +62,7 @@ if syn then
                [2] = '"'..Module:encode(random(math.random(len, len * 1.5)))..'"',
          }
 
-         local obfuscated = "return(function() local "..variable[1].." = {"..fake_encoded[1]..", "..encoded..", "..fake_encoded[2].."};"..'\n'.."local "..variable[2].." = loadstring("..bytes..")(); local "..variable[3].." = "..variable[2]..":decode("..variable[1].."[2]); loadstring("..variable[3]..")() end)()"..'\n'
+         local obfuscated = "return(function() local "..variable[1].." = {"..fake_encoded[1]..", "..encoded..", "..fake_encoded[2].."};"..'\n'.."local "..variable[2].." = loadstring("..bytes..")(); local "..variable[3].." = "..variable[2]..":decode("..variable[1].."[2]); loadstring("..variable[3]..")()"..'\n'.."end)()"
          obfuscated = tostring(obfuscated)
 
          local time = (startTick - tick())
