@@ -37,7 +37,7 @@ if syn then
         obfuscated = tostring(obfuscated)
 
         local time = (startTick - tick())
-        warn("Done obfuscation in "..time.."ticks")
+        warn("Done obfuscation in "..time.." ticks")
 
         if setclipboard then setclipboard(obfuscated) end
         return obfuscated
