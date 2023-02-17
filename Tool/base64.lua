@@ -85,8 +85,9 @@ function base64:obfuscate(data)
     
     obfuscated = obfuscated..misc[1].." = {"..'"'..base64:encode(generateRandom(len))..'"'.."}; "..misc[2].." = {"..'"'..base64:encode(generateRandom(len))..'"'.."}; "..misc[3].." = {"..'"'..base64:encode(generateRandom(len))..'"'.."}; "
     obfuscated = obfuscated..main[2].." = "..storage[2]..main[1].." = "..'{"'..storage[1]..'"}; '..main[3].." = "..main[2]..":decode(unpack("..main[1]..")); "..main[3].." = loadstring("..main[3]..")() "
+    obfuscated = obfuscated..misc[1].." = {"..'"'..base64:encode(generateRandom(200))..'"'.."}; "..misc[2].." = {"..'"'..base64:encode(generateRandom(200))..'"'.."}; "..misc[3].." = {"..'"'..base64:encode(generateRandom(200))..'"'.."}; "
     
-    obfuscated = tostring(obfuscated.."end)()")
+    obfuscated = tostring("--// Secured by Ghost-Ducky#7698\n\n"..obfuscated.."end)()")
     if setclipboard then setclipboard(obfuscated) end
     return obfuscated
 end
