@@ -3,12 +3,12 @@ local Encode = (syn and syn.crypt.base64.encode) or (crypt and (crypt.base64enco
 local Decode = (syn and syn.crypt.base64.decode) or (crypt and (crypt.base64decode or crypt.base64.decode or crypt.base64_decode)) or base64.decode or base64_decode or function(...) error("Missing 'crypt' library") return end
 
 
-function base64:encode(data, key)
-    Encode(data, key)
+function base64:encode(data)
+    Encode(data)
 end
 
-function base64:decode(data, key)
-    Decode(data, key)
+function base64:decode(data)
+    Decode(data)
 end
 
 return base64
