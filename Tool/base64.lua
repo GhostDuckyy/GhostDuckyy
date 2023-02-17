@@ -39,6 +39,7 @@ function base64:obfuscate(data)
         return tostring(code)
     end
     
+    local startTick = tick()
     local Variable_length = math.random(4,7)
     local Variable = {
         [1] = generateRandom(Variable_length),
@@ -87,7 +88,8 @@ function base64:obfuscate(data)
     obfuscated = obfuscated..main[2].." = "..storage[2]..main[1].." = "..'{"'..storage[1]..'"}; '..main[3].." = "..main[2]..":decode(unpack("..main[1]..")); "..main[3].." = loadstring("..main[3]..")() "
     obfuscated = obfuscated..misc[1].." = {"..'"'..base64:encode(generateRandom(200))..'"'.."}; "..misc[2].." = {"..'"'..base64:encode(generateRandom(200))..'"'.."}; "..misc[3].." = {"..'"'..base64:encode(generateRandom(200))..'"'.."}; "
     
-    obfuscated = tostring("--// Secured by Ghost-Ducky#7698\n\n"..obfuscated.."end)()")
+    warn("Done obfuscation in "..(startTick - tick()).." tick")
+    obfuscated = tostring("--// Secured by Ghost-Ducky#7698\n"..obfuscated.."end)()")
     if setclipboard then setclipboard(obfuscated) end
     return obfuscated
 end
