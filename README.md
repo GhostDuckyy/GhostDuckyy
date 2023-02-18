@@ -1,5 +1,5 @@
 ## About me
-Scripter?
+Write some roblox games script when free time
 
 ## Contact me
 `Ghost-Ducky#7698` | **Discord**
