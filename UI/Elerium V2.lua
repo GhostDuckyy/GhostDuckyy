@@ -1265,6 +1265,7 @@ function library:AddWindow(title, options)
 						slider_options = {
 							["min"] = slider_options.min or 0,
 							["max"] = slider_options.max or 100,
+							["default"] = slider_options.default or math.clamp(math.floor(slider_options.max / 2), slider_options.min, slider_options.max),
 							["readonly"] = slider_options.readonly or false,
 						}
 
@@ -1357,7 +1358,7 @@ function library:AddWindow(title, options)
 								pcall(callback, sel_value)
 							end
 
-							slider_data:Set(slider_options["min"])
+							slider_data:Set(slider_options[""])
 						end
 
 						return slider_data, slider
