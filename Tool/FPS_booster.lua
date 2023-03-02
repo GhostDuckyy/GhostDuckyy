@@ -1,9 +1,15 @@
+--// Load Check
 if not game:IsLoaded() then game.Loaded:Wait() end
 
+--// Service
+local Players = game:GetService("Players")
+
+--// Env
 local startTick = tick()
 local IgnoreCharacters
 local CustomList
 
+--// Remove connections
 if typeof(getgenv().Connections):lower() == "table" then
     for i,v in next, getgenv().Connections do
         pcall(task.spawn(function()
@@ -15,6 +21,7 @@ else
     getgenv().Connections = {}
 end
 
+--// List
 local PartsList = {
     "Part",
     "BasePart",
@@ -48,13 +55,14 @@ local DestroyList = {
     "Explosion",
 }
 
+--// function
 local function checkInstance(v)
     pcall(task.spawn(function()
         task.wait(.1)
         IgnoreCharacters = (typeof(getgenv().IgnoreCharacters):lower() == "boolean" and getgenv().IgnoreCharacters) or false
         CustomList = (typeof(getgenv().CustomList):lower() == "table" and getgenv().CustomList) or {}
         if typeof(v) ~= "Instance" or (v == nil or v.Parent == nil) then return end
-        if IgnoreCharacters and (v.Parent:IsA("Model") and game:GetService("Players"):GetPlayerFromCharacter(v.Parent) ~= nil) then return end
+        if IgnoreCharacters and (v.Parent:IsA("Model") and Players:GetPlayerFromCharacter(v.Parent) ~= nil) then return end
 
         if table.find(PartsList, v.ClassName) then
             if not table.find(PartsList.BlackList, v.Name) then
@@ -81,7 +89,7 @@ local function checkInstance(v)
 
                     if type(ClassName) == "string" then
                         if v == nil or v.Parent == nil then return end
-                        if ClassName:lower() == "model" and (v:IsA("Model") and game:GetService("Players"):GetPlayerFromCharacter(v) ~= nil) then return end
+                        if ClassName:lower() == "model" and (v:IsA("Model") and Players:GetPlayerFromCharacter(v) ~= nil) then return end
                         local lower = v.ClassName:lower()
                         if lower == ClassName:lower() or (string.find(lower, ClassName:lower()) or string.match(lower, ClassName:lower())) then
                             if not table.find(PartsList.BlackList, v.Name) then
@@ -95,6 +103,7 @@ local function checkInstance(v)
     end))
 end
 
+--// Source
 for i,v in ipairs(workspace:GetDescendants()) do
     checkInstance(v)
 end
@@ -102,5 +111,6 @@ end
 local DescendantAdded = workspace.DescendantAdded:Connect(checkInstance)
 table.insert(getgenv().Connections, DescendantAdded)
 
+--// Loaded time
 local Time = tostring(startTick - tick())
 warn("FPS Boost Loaded in "..Time.." tick(s)")
