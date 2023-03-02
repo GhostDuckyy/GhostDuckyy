@@ -1,4 +1,4 @@
---// NOTE: This method is detectable if dev add check on workspace!!! (because am lazy to use Drawing library :sob:
+--// NOTE: This method is detectable if dev add check on workspace!!! (because am lazy to use Drawing Library :sob:
 if not game:IsLoaded() then
     game.Loaded:Wait()
 end
