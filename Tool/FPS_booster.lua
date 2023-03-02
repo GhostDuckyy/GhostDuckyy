@@ -3,11 +3,12 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 
 --// Service
 local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Character = (LocalPlayer.Character or LocalPlayer.CharacterAppearanceLoaded:Wait())
 
 --// Env
 local startTick = tick()
-local IgnoreCharacters
-local CustomList
+local IgnoreCharacters, CustomList
 
 --// Remove connections
 if typeof(getgenv().Connections):lower() == "table" then
@@ -45,7 +46,8 @@ local DestroyList = {
     "Decal",
     "Texture",
     "Accessory",
-    "Clothing",
+    "Shirt",
+    "Pants",
     "ParticleEmitter",
     "Trail",
     "Smoke",
@@ -55,20 +57,43 @@ local DestroyList = {
     "Explosion",
 }
 
+local IgnoreClassName = {
+    "Folder",
+    "Model",
+}
+
 --// function
 local function checkInstance(v)
     pcall(task.spawn(function()
         task.wait(.1)
-        IgnoreCharacters = (typeof(getgenv().IgnoreCharacters):lower() == "boolean" and getgenv().IgnoreCharacters) or false
+        IgnoreCharacters = (typeof(getgenv().IgnoreCharacters):lower() == "table" and getgenv().IgnoreCharacters) or {Self = true, Others = false, Clothes = true}
         CustomList = (typeof(getgenv().CustomList):lower() == "table" and getgenv().CustomList) or {}
+
         if typeof(v) ~= "Instance" or (v == nil or v.Parent == nil) then return end
-        if IgnoreCharacters and (v.Parent:IsA("Model") and Players:GetPlayerFromCharacter(v.Parent) ~= nil) then return end
+        if (v.Parent ~= nil and v.Parent == workspace.CurrentCamera) then return end
+        if table.find(IgnoreClassName, v.ClassName) then return end
+
+        if IgnoreCharacters.Self then
+            local GetPlayerFromCharacter = Players:GetPlayerFromCharacter(v.Parent)
+            if (v.Parent ~= nil and (GetPlayerFromCharacter ~= nil and GetPlayerFromCharacter == LocalPlayer)) then return end
+        end
+
+        if IgnoreCharacters.Others then
+            local GetPlayerFromCharacter = Players:GetPlayerFromCharacter(v.Parent)
+            if (v.Parent ~= nil and (GetPlayerFromCharacter ~= nil and GetPlayerFromCharacter ~= LocalPlayer)) then return end
+        end
 
         if table.find(PartsList, v.ClassName) then
             if not table.find(PartsList.BlackList, v.Name) then
                 v.Material = Enum.Material.SmoothPlastic
             end
         elseif table.find(DestroyList, v.ClassName) then
+            if v:IsA("Decal") and (v.Parent ~= nil and table.find(PartsList.BlackList, v.Parent.Name)) then
+                return
+            elseif v:IsA("Shirt") or v:IsA("Pants") then
+                if not IgnoreCharacters.Clothes then v:Destroy() else return end
+            end
+
             v:Destroy()
         else
             for i2 = 1, #CustomList do
