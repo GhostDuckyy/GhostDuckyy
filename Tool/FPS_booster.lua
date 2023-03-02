@@ -38,6 +38,14 @@ local DestroyList = {
     "Decal",
     "Texture",
     "Accessory",
+    "Clothing",
+    "ParticleEmitter",
+    "Trail",
+    "Smoke",
+    "Fire",
+    "Sparkles",
+    "PostEffect",
+    "Explosion",
 }
 
 local function checkInstance(v)
@@ -93,5 +101,6 @@ end
 
 local DescendantAdded = workspace.DescendantAdded:Connect(checkInstance)
 table.insert(getgenv().Connections, DescendantAdded)
+
 local Time = tostring(startTick - tick())
 warn("FPS Boost Loaded in "..Time.." tick(s)")
