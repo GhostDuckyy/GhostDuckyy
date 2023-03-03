@@ -4,7 +4,7 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 --// Service
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local Character = (LocalPlayer.Character or LocalPlayer.CharacterAppearanceLoaded:Wait())
+local Character = (LocalPlayer.Character ~= nil and LocalPlayer.Character) or LocalPlayer.CharacterAppearanceLoaded:Wait()
 
 --// Env
 local startTick = tick()
