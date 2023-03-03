@@ -210,13 +210,14 @@ local function checkInstance(v)
 end
 
 --// Source
-local DescendantAdded = workspace.DescendantAdded:Connect(checkInstance)
-table.insert(getgenv().Connections, DescendantAdded)
+do
+    local DescendantAdded = workspace.DescendantAdded:Connect(checkInstance)
+    table.insert(getgenv().Connections, DescendantAdded)
 
-for i,v in ipairs(workspace:GetDescendants()) do
-    checkInstance(v)
+    for i,v in ipairs(workspace:GetDescendants()) do
+        checkInstance(v)
+    end
+
+    local Time = tostring(startTick - tick())
+    warn("FPS Boost Loaded in "..Time.." tick(s)")
 end
-
---// Loaded time
-local Time = tostring(startTick - tick())
-warn("FPS Boost Loaded in "..Time.." tick(s)")
