@@ -8,7 +8,7 @@ local Character = (LocalPlayer.Character or LocalPlayer.CharacterAppearanceLoade
 
 --// Env
 local startTick = tick()
-local IgnoreCharacters, CustomList, IgnoreList
+local IgnoreCharacters, IgnoreList, CustomList
 
 --// Remove connections
 if typeof(getgenv().Connections):lower() == "table" then
@@ -25,8 +25,8 @@ end
 --// List
 local default_Setting = {
     IgnoreCharacters = {Self = true, Others = false, RemoveClothes = false},
-    CustomList = {},
     IgnoreList = {{ClassName = "Folder"}, {ClassName = "Model"}},
+    CustomList = {},
 }
 
 local PartsList = {
@@ -115,12 +115,12 @@ local function checkInstance(v)
         task.wait(.1)
         if type(getgenv().Setting):lower() == "table" then
             IgnoreCharacters = (typeof(getgenv().Setting.IgnoreCharacters):lower() == "table" and getgenv().Setting.IgnoreCharacters) or default_Setting.IgnoreCharacters
-            CustomList = (typeof(getgenv().Setting.CustomList):lower() == "table" and getgenv().Setting.CustomList) or default_Setting.CustomList
             IgnoreList = (typeof(getgenv().Setting.IgnoreList):lower() == "table" and getgenv().Setting.IgnoreList) or default_Setting.IgnoreList
+            CustomList = (typeof(getgenv().Setting.CustomList):lower() == "table" and getgenv().Setting.CustomList) or default_Setting.CustomList
         else
             IgnoreCharacters = default_Setting.IgnoreCharacters
-            CustomList = default_Setting.CustomList
             IgnoreList = default_Setting.IgnoreList
+            CustomList = default_Setting.CustomList
         end
 
         if typeof(v) ~= "Instance" or (v == nil or v.Parent == nil) then return end
