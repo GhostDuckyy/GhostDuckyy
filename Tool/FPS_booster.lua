@@ -68,8 +68,10 @@ local function checkParent(value, Parent)
     if typeof(value) ~= "Instance" then return end
 
     if typeof(Parent) == "Instance" and Parent ~= nil then
-        for i,v in ipairs(Parent:GetDescendants()) do
-            if v == value then
+        local Descendants = Parent:GetDescendants()
+        for i = 1, #Descendants do
+            local currentArray = Descendants[i]
+            if currentArray ~= nil and currentArray == value then
                 return true
             end
         end
