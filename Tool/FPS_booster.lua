@@ -130,6 +130,12 @@ local function checkInstance(v)
         if IgnoreCharacters.Self and Character ~= nil then
             if checkParent(v, Character) then
                 return
+            elseif v.Parent:IsA("Model") and Players:GetPlayerFromCharacter(v.Parent) == LocalPlayer then
+                return
+            elseif table.find(PartsList.BlackList, v.Parent.Name) then
+                if v.Parent.Parent:IsA("Model") and Players:GetPlayerFromCharacter(v.Parent) == LocalPlayer then
+                    return
+                end
             end
         end
 
