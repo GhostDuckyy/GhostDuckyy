@@ -220,6 +220,6 @@ do
         checkInstance(v)
     end
 
-    local Time = tostring(startTick - tick())
+    local Time = tostring(tick() - startTick)
     warn("FPS Boost Loaded in "..Time.." tick(s)")
 end
