@@ -9,7 +9,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuck
 )
 ```
 ## Credits
-Made by GhostDuckyy / **`Ghost-Ducky#7698`**,
+Made by [**GhostDuckyy**](https://github.com/GhostDuckyy) / **`Ghost-Ducky#7698`**,
 Thank [**Nahida**](https://v3rmillion.net/member.php?action=profile&uid=2698182) to explain `Ray.new`!
 
 ## Preview
