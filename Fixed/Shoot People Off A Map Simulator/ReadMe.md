@@ -1,5 +1,5 @@
 # ReadMe
-Use on your own risk, recommend use ALT!!!
+Use on your own risk, recommend use **ALT**!!!
 ## About
 This is a silent aim for this [game](https://roblox.com/games/11124905486/).
 #### Loadstring
