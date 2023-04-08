@@ -1,1 +1,1 @@
-### A folder to save broken script but i fixed it
+### A folder to save fixed scripts
