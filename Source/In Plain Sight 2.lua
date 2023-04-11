@@ -65,10 +65,17 @@ local PlayerAdded = Thieves.PlayerAdded:Connect(function(player)
 end)
 table.insert(Connections, PlayerAdded)
 
+local PlayerRemoved = Thieves.PlayerRemoved:Connect(function(player)
+   if player == LocalPlayer then return end
+   if HighlightFolder:FindFirstChild(tostring(player.UserId)) then
+      HighlightFolder:FindFirstChild(tostring(player.UserId)):Destroy()
+   end
+end)
+table.insert(Connections, PlayerRemoved)
 
 local ChildAdded = RoundDebris.ChildAdded:Connect(function(camera)
    task.wait(.3)
-   if (camera:IsA("Model") and camera.Name == "ActiveCameraModel") then
+   if (camera:IsA("Model") and camera.Name == "ActiveCameraModel" and camera:FindFirstChild("Attachment")) then
       AddHighlight(camera, LocalPlayer ~= Thieves)
    end
 end)
