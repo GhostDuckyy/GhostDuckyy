@@ -63,7 +63,7 @@ local PlayerAdded = Thieves.PlayerAdded:Connect(function(player)
       AddHighlight(player.Character, LocalPlayer.Team ~= Thieves)
    end
 end)
-table.insert(getgenv().Connections, PlayerAdded)
+table.insert(Connections, PlayerAdded)
 
 
 local ChildAdded = RoundDebris.ChildAdded:Connect(function(camera)
@@ -72,7 +72,7 @@ local ChildAdded = RoundDebris.ChildAdded:Connect(function(camera)
       AddHighlight(camera, LocalPlayer ~= Thieves)
    end
 end)
-table.insert(getgenv().Connections, ChildAdded)
+table.insert(Connections, ChildAdded)
 
 for _, player in pairs(Thieves:GetPlayers()) do
    if player == LocalPlayer then return end
