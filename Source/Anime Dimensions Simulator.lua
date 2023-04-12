@@ -243,16 +243,6 @@ LocalPlayer.CharacterAdded:Connect(function(newCharacter)
    NameLabel.Text = "Made by Ghost-Ducky#7698"
 end)
 
-LocalPlayer.OnTeleport:Connect(function(State)
-   Settings.AutoFarm = false
-
-   if (State == Enum.TeleportState.Started) then
-      local string = [[ loadstring(game:HttpGet("https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Source/Anime%20Dimensions%20Simulator.lua?raw=true"))() ]]
-      local Queue_on_teleport = (syn and syn.queue_on_teleport) or queue_on_teleport or queue_on_teleport or function() debugPrint("Function: 'queue_on_teleport' is nil") end
-      Queue_on_teleport(string)
-   end
-end)
-
 local Enemy = GetClosestEnemy()
 while task.wait(.1) do
    local Character, Root = GetCharacter(), GetRoot()
