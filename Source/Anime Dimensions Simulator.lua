@@ -88,7 +88,7 @@ function GetRoot()
    local Character = GetCharacter()
    if Character ~= nil then
       task.wait(.1)
-      Character:WaitForChild("HumanoidRootPart")
+      Character:WaitForChild("HumanoidRootPart", 9e9)
       local Root = Character:FindFirstChild("HumanoidRootPart")
       return Root
    end
@@ -116,7 +116,7 @@ function GetClosestEnemy()
             return Enemy
          end
 
-         local distance = (Root.Position - Child:WaitForChild("HumanoidRootPart").Position).Magnitude
+         local distance = (Root.Position - Child.HumanoidRootPart.Position).Magnitude
 
          if distance < Last_distance then
             Enemy = Child
@@ -239,8 +239,10 @@ end
 
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
    task.wait(1)
-   local NameLabel = newCharacter:WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
-   NameLabel.Text = "Made by Ghost-Ducky#7698"
+   if (newCharacter) then
+      local NameLabel = newCharacter:WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
+      NameLabel.Text = "Made by Ghost-Ducky#7698"
+   end
 end)
 
 local Enemy = GetClosestEnemy()
