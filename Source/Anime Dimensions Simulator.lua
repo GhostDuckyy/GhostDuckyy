@@ -238,11 +238,13 @@ if GetCharacter() ~= nil then
 end
 
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
-   task.wait(1)
-   if (newCharacter) then
-      local NameLabel = newCharacter:WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
-      NameLabel.Text = "Made by Ghost-Ducky#7698"
-   end
+   pcall(function()
+      task.wait(1.5)
+      if (newCharacter) then
+         local NameLabel = newCharacter:WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
+         NameLabel.Text = "Made by Ghost-Ducky#7698"
+      end
+   end)
 end)
 
 local Enemy = GetClosestEnemy()
