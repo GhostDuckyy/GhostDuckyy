@@ -233,16 +233,13 @@ end
 
 --// Source \\--
 if GetCharacter() ~= nil then
-   local NameLabel  =GetCharacter():WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
-
+   local NameLabel  = GetCharacter():WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
    NameLabel.Text = "Made by Ghost-Ducky#7698"
 end
 
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
    task.wait(1)
-   newCharacter:WaitForChild("Head", 60)
-   local NameLabel = newCharacter.Head:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
-
+   local NameLabel = newCharacter:WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
    NameLabel.Text = "Made by Ghost-Ducky#7698"
 end)
 
