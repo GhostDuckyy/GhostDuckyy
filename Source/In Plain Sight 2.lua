@@ -75,7 +75,7 @@ table.insert(Connections, PlayerRemoved)
 
 local ChildAdded = RoundDebris.ChildAdded:Connect(function(camera)
    task.wait(.3)
-   if (camera:IsA("Model") and camera.Name == "ActiveCameraModel" and camera:FindFirstChild("Attachment")) then
+   if (camera:IsA("Model") and camera.Name == "ActiveCameraModel" and camera:WaitForChild("Attachment")) then
       AddHighlight(camera, LocalPlayer ~= Thieves)
    end
 end)
@@ -90,7 +90,7 @@ for _, player in pairs(Thieves:GetPlayers()) do
 end
 
 for _, camera in pairs(RoundDebris:GetChildren()) do
-   if (camera:IsA("Model") and camera.Name == "ActiveCameraModel") then
+   if (camera:IsA("Model") and camera.Name == "ActiveCameraModel" and camera:FindFirstChild("Attachment")) then
       AddHighlight(camera, LocalPlayer ~= Thieves)
    end
 end
