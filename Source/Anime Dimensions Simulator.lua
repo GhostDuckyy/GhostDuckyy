@@ -4,17 +4,17 @@ if table.find(BlackList_IDs, game.PlaceId) then return end
 if not game:IsLoaded() then game.Loaded:Wait() end
 
 --// Services \\--
-local TweenService = game:GetService("TweenService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+local TweenService            = game:GetService("TweenService")
+local ReplicatedStorage       = game:GetService("ReplicatedStorage")
+local Players                 = game:GetService("Players")
+local LocalPlayer             = Players.LocalPlayer
 
 --// Folders \\--
 local Monsters = workspace:WaitForChild("Folders"):WaitForChild("Monsters")
 
 --// Remotes \\--
-local MainRemoteEvent = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("MainRemoteEvent")
-local MainRemoteFunction = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
+local MainRemoteEvent      = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("MainRemoteEvent")
+local MainRemoteFunction   = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
 
 --// Settings \\--
 getgenv().Settings = (type(getgenv().Settings) == "table" and getgenv().Settings) or {
@@ -33,7 +33,6 @@ getgenv().CurrentTween = nil
 local function CancelTween()
    if CurrentTween ~= nil then
       CurrentTween:Pause()
-      task.wait(.01)
       CurrentTween:Cancel()
       CurrentTween = nil
    end
@@ -43,36 +42,43 @@ local function Tween(Time: number, prop: table)
    if type(Time) ~= "number" then Time = 2 end
    if type(prop) ~= "table" then return end
 
-   if CurrentTween ~= nil then
+   if (CurrentTween) then
       CancelTween()
    end
 
    local Root = GetRoot()
-   if Root == nil then
+   if (Root == nil) then
       while task.wait(.1) do
          Root = GetRoot()
-         if Root ~= nil then break end
+         if (Root) then break end
       end
    end
-
    Root.Anchored = false
-   CurrentTween = TweenService:Create(Root, TweenInfo.new(Time, Enum.EasingStyle.Linear), prop)
-   CurrentTween.Completed:Connect(function()
-      CurrentTween = nil
 
-      if Root ~= nil then
-         Root.Anchored = true
-      end
-   end)
+   local distance = (Root.CFrame.Position - prop.CFrame.Position).Magnitude
 
-   CurrentTween:Play()
-   return CurrentTween.Completed:Wait()
+   if distance <= 15 then
+      Root.CFrame = prop.CFrame
+      Root.Anchored = true
+      task.wait(.2)
+   else
+      CurrentTween = TweenService:Create(Root, TweenInfo.new(Time, Enum.EasingStyle.Linear), prop)
+      CurrentTween.Completed:Connect(function()
+         CurrentTween = nil
+         if (Root) then
+            Root.Anchored = true
+         end
+      end)
+
+      CurrentTween:Play()
+      CurrentTween.Completed:Wait()
+   end
 end
 
 --// Functions \\--
 function GetCharacter()
    local RespawnTimerFrame = LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame"):WaitForChild("RespawnTimerFrame")
-   if (RespawnTimerFrame ~= nil and RespawnTimerFrame.Visible) then
+   if (RespawnTimerFrame and RespawnTimerFrame.Visible) then
       return nil
    end
    return (LocalPlayer.Character ~= nil and LocalPlayer.Character) or LocalPlayer.CharacterAdded:Wait()
@@ -81,7 +87,9 @@ end
 function GetRoot()
    local Character = GetCharacter()
    if Character ~= nil then
-      local Root = Character:WaitForChild("HumanoidRootPart")
+      task.wait(.1)
+      Character:WaitForChild("HumanoidRootPart")
+      local Root = Character:FindFirstChild("HumanoidRootPart")
       return Root
    end
 end
@@ -225,23 +233,26 @@ end
 
 --// Source \\--
 if GetCharacter() ~= nil then
-   local Head = GetCharacter():WaitForChild("Head")
-   local NameLabel = Head:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
+   local NameLabel  =GetCharacter():WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
 
    NameLabel.Text = "Made by Ghost-Ducky#7698"
 end
 
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
-   task.wait(.5)
-   local Head = newCharacter:WaitForChild("Head")
-   local NameLabel = Head:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
+   task.wait(1)
+   newCharacter:WaitForChild("Head", 60)
+   local NameLabel = newCharacter.Head:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
 
    NameLabel.Text = "Made by Ghost-Ducky#7698"
 end)
 
 LocalPlayer.OnTeleport:Connect(function(State)
-   if State ~= Enum.TeleportState.Failed then
-      Settings.AutoFarm = false
+   Settings.AutoFarm = false
+
+   if (State == Enum.TeleportState.Started) then
+      local string = [[ loadstring(game:HttpGet("https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Source/Anime%20Dimensions%20Simulator.lua?raw=true"))() ]]
+      local Queue_on_teleport = (syn and syn.queue_on_teleport) or queue_on_teleport or queue_on_teleport or function() debugPrint("Function: 'queue_on_teleport' is nil") end
+      Queue_on_teleport(string)
    end
 end)
 
@@ -249,7 +260,7 @@ local Enemy = GetClosestEnemy()
 while task.wait(.1) do
    local Character, Root = GetCharacter(), GetRoot()
    if not Settings.AutoFarm then
-      if Character ~= nil and Root ~= nil then
+      if (Character and Root) then
          Root.Anchored = false
       end
       break
@@ -269,8 +280,8 @@ while task.wait(.1) do
       end
    end
 
-   if (Character ~= nil and Root ~= nil) and not IsEnded() then
-      if (Enemy ~= nil and Enemy.Parent ~= nil) then
+   if (Character and Root) and not IsEnded() then
+      if (Enemy and Enemy.Parent) then
          local EnemyRoot = Enemy:WaitForChild("HumanoidRootPart")
          local EnemyHumanoid = Enemy:FindFirstChildOfClass("Humanoid")
 
@@ -279,10 +290,8 @@ while task.wait(.1) do
             continue
          end
 
-         if Root.CFrame ~= CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) then
-            debugPrint("MoveTo: "..Enemy.Name, "\n")
-            Tween(1.5, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) })
-         end
+         debugPrint("MoveTo: "..Enemy.Name, "\n")
+         Tween(1, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) })
 
          if checkCD(1, true) then
             debugPrint("UseAssist: 1 \n")
@@ -326,27 +335,8 @@ while task.wait(.1) do
             continue
          end
 
-         while task.wait(.2) do
-            if not Settings.AutoFarm then break end
-            if IsEnded() then break end
-            if (checkCD(5) or checkCD(4) or checkCD(3) or checkCD(2) or checkCD(1)) then break end
-
-            if (Enemy ~= nil and Enemy.Parent ~= nil) then
-               if (EnemyHumanoid and EnemyHumanoid.Health <= 0) then
-                  break
-               end
-
-               if Root.CFrame ~= CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) then
-                  debugPrint("MoveTo: "..Enemy.Name, "\n")
-                  Tween(1.5, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) })
-               end
-
-               debugPrint("UseSkill: BasicAttack")
-               useAbility("click")
-            else
-               break
-            end
-         end
+         debugPrint("UseSkill: BasicAttack")
+         useAbility("click")
       else
          Enemy = GetClosestEnemy()
       end
