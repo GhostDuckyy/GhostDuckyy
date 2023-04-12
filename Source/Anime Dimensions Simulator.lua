@@ -4,17 +4,17 @@ if table.find(BlackList_IDs, game.PlaceId) then return end
 if not game:IsLoaded() then game.Loaded:Wait() end
 
 --// Services \\--
-local TweenService            = game:GetService("TweenService")
-local ReplicatedStorage       = game:GetService("ReplicatedStorage")
-local Players                 = game:GetService("Players")
-local LocalPlayer             = Players.LocalPlayer
+local TweenService            =  game:GetService("TweenService")
+local ReplicatedStorage       =  game:GetService("ReplicatedStorage")
+local Players                 =  game:GetService("Players")
+local LocalPlayer             =  Players.LocalPlayer
 
 --// Folders \\--
-local Monsters = workspace:WaitForChild("Folders"):WaitForChild("Monsters")
+local Monsters                =  workspace:WaitForChild("Folders"):WaitForChild("Monsters")
 
 --// Remotes \\--
-local MainRemoteEvent      = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("MainRemoteEvent")
-local MainRemoteFunction   = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
+local MainRemoteEvent         =  ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("MainRemoteEvent")
+local MainRemoteFunction      =  ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
 
 --// Settings \\--
 getgenv().Settings = (type(getgenv().Settings) == "table" and getgenv().Settings) or {
