@@ -31,7 +31,7 @@ getgenv().CurrentTween = nil
 
 --// Tween \\--
 local function CancelTween()
-   if CurrentTween ~= nil then
+   if (not CurrentTween) then
       CurrentTween:Pause()
       CurrentTween:Cancel()
       CurrentTween = nil
@@ -39,7 +39,7 @@ local function CancelTween()
 end
 
 local function Tween(Time: number, prop: table)
-   if type(Time) ~= "number" then Time = 2 end
+   if type(Time) ~= "number" then Time = 1 end
    if type(prop) ~= "table" then return end
 
    if (CurrentTween) then
@@ -47,8 +47,8 @@ local function Tween(Time: number, prop: table)
    end
 
    local Root = GetRoot()
-   if (Root == nil) then
-      while task.wait(.1) do
+   if (not Root) then
+      while task.wait() do
          Root = GetRoot()
          if (Root) then break end
       end
@@ -60,9 +60,9 @@ local function Tween(Time: number, prop: table)
    if distance <= 15 then
       Root.CFrame = prop.CFrame
       Root.Anchored = true
-      task.wait(.2)
+      task.wait(.1)
    else
-      CurrentTween = TweenService:Create(Root, TweenInfo.new(Time, Enum.EasingStyle.Linear), prop)
+      CurrentTween = TweenService:Create(Root, TweenInfo.new(Time, Enum.EasingStyle.Linear, Enum.EasingStyle.Linear), prop)
       CurrentTween.Completed:Connect(function()
          CurrentTween = nil
          if (Root) then
@@ -86,12 +86,13 @@ end
 
 function GetRoot()
    local Character = GetCharacter()
-   if Character ~= nil then
+   if (Character) then
       task.wait(.1)
       Character:WaitForChild("HumanoidRootPart", 9e9)
       local Root = Character:FindFirstChild("HumanoidRootPart")
       return Root
    end
+   return nil
 end
 
 function GetClosestEnemy()
@@ -100,13 +101,13 @@ function GetClosestEnemy()
    local Root = GetRoot()
    local Childrens = Monsters:GetChildren()
 
-   if Root == nil then return nil end
+   if not Root then return nil end
    if #Childrens <= 0 then return nil end
 
    for i = 1, #Childrens do
       local Child = Childrens[i]
 
-      if Child ~= nil then
+      if (Child) then
          if not Child:FindFirstChildOfClass("Humanoid") then continue end
          if not Child:FindFirstChild("HumanoidRootPart") then continue end
          if Child:FindFirstChildOfClass("Humanoid").Health <= 0 then continue end
@@ -133,7 +134,7 @@ function useAssist(number: number)
    if number >= 3 then return end
 
    local Root = GetRoot()
-   if Root == nil then return end
+   if (not Root) then return end
 
    task.spawn(function()
       MainRemoteEvent:FireServer("UseAssistSkill", {["hrpCFrame"] = Root.CFrame}, number)
@@ -185,7 +186,7 @@ end
 
 function useAbility(mode)
    local Root = GetRoot()
-   if Root == nil then return end
+   if not Root then return end
 
    task.spawn(function()
       if type(mode) == "string" and mode:lower() == "click" then
@@ -201,7 +202,7 @@ function IsEnded()
    local ResultUIs = {[1] = CenterUIFrame:WaitForChild("ResultUI"), [2] = CenterUIFrame:WaitForChild("RaidResultUI")}
 
    for i,v in pairs(ResultUIs) do
-      if v.Visible then
+      if (v.Visible) then
          return true
       end
    end
@@ -232,104 +233,109 @@ function debugPrint(...)
 end
 
 --// Source \\--
-if GetCharacter() ~= nil then
-   local NameLabel  = GetCharacter():WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
-   NameLabel.Text = "Made by Ghost-Ducky#7698"
+if (GetCharacter()) then
+    if (GetCharacter():WaitForChild("Head", 9e9)) then
+        local NameLabel = GetCharacter().Head:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
+        NameLabel.Text = "Made by Ghost-Ducky#7698"
+    end
 end
 
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
-   pcall(function()
-      task.wait(1.5)
-      if (newCharacter) then
-         local NameLabel = newCharacter:WaitForChild("Head", 60):WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
-         NameLabel.Text = "Made by Ghost-Ducky#7698"
-      end
-   end)
+    task.wait(.5)
+    if (newCharacter) then
+        if (newCharacter:WaitForChild("Head", 9e9)) then
+            local NameLabel = newCharacter.Head:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
+            NameLabel.Text = "Made by Ghost-Ducky#7698"
+        end
+    end
 end)
 
-local Enemy = GetClosestEnemy()
-while task.wait(.1) do
-   local Character, Root = GetCharacter(), GetRoot()
-   if not Settings.AutoFarm then
-      if (Character and Root) then
-         Root.Anchored = false
-      end
-      break
-   end
+task.spawn(function()
+    local Enemy = GetClosestEnemy()
+    while task.wait(.05) do
+    local Character, Root = GetCharacter(), GetRoot()
+    if not Settings.AutoFarm then
+        if (Character and Root) then
+            Root.Anchored = false
+        end
+        break
+    end
 
-   if IsEnded() then
-      debugPrint("Game Ended")
+    if IsEnded() then
+        debugPrint("Game Ended")
 
-      if Settings.AutoRetry then
-         debugPrint("Retry dungeon \n")
-         Retry()
-         continue
-      else
-         debugPrint("Leave dungeon \n")
-         Leave()
-         continue
-      end
-   end
-
-   if (Character and Root) and not IsEnded() then
-      if (Enemy and Enemy.Parent) then
-         local EnemyRoot = Enemy:WaitForChild("HumanoidRootPart")
-         local EnemyHumanoid = Enemy:FindFirstChildOfClass("Humanoid")
-
-         if (EnemyHumanoid and EnemyHumanoid.Health <= 0) then
-            Enemy = nil
+        if Settings.AutoRetry then
+            debugPrint("Retry dungeon \n")
+            Retry()
             continue
-         end
-
-         debugPrint("MoveTo: "..Enemy.Name, "\n")
-         Tween(1, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) })
-
-         if checkCD(1, true) then
-            debugPrint("UseAssist: 1 \n")
-            useAssist(1)
-         end
-
-         if checkCD(2, true) then
-            debugPrint("UseAssist: 2 \n")
-            useAssist(2)
-         end
-
-         if checkCD(5) then
-            debugPrint("UseSkill: 5")
-            useAbility(5)
-            task.wait(.5)
+        else
+            debugPrint("Leave dungeon \n")
+            Leave()
             continue
-         end
+        end
+    end
 
-         if checkCD(4) then
-            debugPrint("UseSkill: 4")
-            useAbility(4)
-            task.wait(.5)
-            continue
-         end
+    if (Character and Root) and not IsEnded() then
+        if (Enemy and Enemy.Parent) then
+            local EnemyRoot = Enemy:WaitForChild("HumanoidRootPart")
+            local EnemyHumanoid = Enemy:FindFirstChildOfClass("Humanoid")
 
-         if checkCD(3) then
-            debugPrint("UseSkill: 3")
-            useAbility(3)
-            continue
-         end
+            if (EnemyHumanoid and EnemyHumanoid.Health <= 0) then
+                Enemy = nil
+                continue
+            end
 
-         if checkCD(2) then
-            debugPrint("UseSkill: 2")
-            useAbility(2)
-            continue
-         end
+            debugPrint("MoveTo: "..Enemy.Name, "\n")
+            Tween(1, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 5, 0), EnemyRoot.CFrame.Position) })
 
-         if checkCD(1) then
-            debugPrint("UseSkill: 1")
-            useAbility(1)
-            continue
-         end
+            if checkCD(1, true) then
+                debugPrint("UseAssist: 1 \n")
+                useAssist(1)
+            end
 
-         debugPrint("UseSkill: BasicAttack")
-         useAbility("click")
-      else
-         Enemy = GetClosestEnemy()
-      end
-   end
-end
+            if checkCD(2, true) then
+                debugPrint("UseAssist: 2 \n")
+                useAssist(2)
+            end
+
+            if (not checkCD(5) and not checkCD(4) and not checkCD(3) and not checkCD(2) and not checkCD(1)) then
+                debugPrint("UseSkill: BasicAttack")
+                useAbility("click")
+                continue
+            end
+
+            if checkCD(5) then
+                debugPrint("UseSkill: 5")
+                useAbility(5)
+                continue
+            end
+
+            if checkCD(4) then
+                debugPrint("UseSkill: 4")
+                useAbility(4)
+                continue
+            end
+
+            if checkCD(3) then
+                debugPrint("UseSkill: 3")
+                useAbility(3)
+                continue
+            end
+
+            if checkCD(2) then
+                debugPrint("UseSkill: 2")
+                useAbility(2)
+                continue
+            end
+
+            if checkCD(1) then
+                debugPrint("UseSkill: 1")
+                useAbility(1)
+                continue
+            end
+        else
+            Enemy = GetClosestEnemy()
+        end
+    end
+    end
+end)
