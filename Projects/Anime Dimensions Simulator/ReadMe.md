@@ -4,6 +4,8 @@ Made by `Ghost-Ducky#7698`
 This script still in **[W.I.P]** ⚠️.
 
 Recommand use alt, use on ur **own risk**!!!
+
+Also don't look the source, i try my best to beautiful it (hope don't hurt ur eyes) <3
 ## Changelogs
 ```lua
 - Webhook: [Current are very useless]
