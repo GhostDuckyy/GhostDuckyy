@@ -23,10 +23,10 @@ Configuration of script
 ### Loadstring 🌐
 ```lua
 getgenv().Settings = {
-	AutoFarm  	   =  	true,
-	AutoRetry  	   =  	true,
-	FpsBooster     =  	false,
-	Webhook        = 	{Enabled  =  false, Url  =  "https://discord.com/api/webhooks/example/tokens"},
+	AutoFarm  	  =  	true,
+	AutoRetry  	  =  	true,
+	FpsBooster    =  	false,
+	Webhook       = 	{Enabled  =  false, Url  =  "https://discord.com/api/webhooks/example/tokens"},
 }
 
 loadstring(game:HttpGet("[https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Projects/Anime Dimensions Simulator/source.lua](https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Projects/Anime%20Dimensions%20Simulator/source.lua)", true))("skull")
