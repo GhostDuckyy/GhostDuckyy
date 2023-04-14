@@ -2,18 +2,21 @@
 Made by `Ghost-Ducky#7698`
 ### Notes 🗒️
 This script still in **[W.I.P]** ⚠️.
-Recommand use alt, on ur own risk!!!
+
+Recommand use alt, use on ur **own risk**!!!
 ## Changelogs
 ```lua
 - Webhook: [Current are very useless]
 ```
-#### Bugs 🪲
-- Can't attack enemies [Blame Tween Function] - 🐛
+### Bugs 🪲
+- Can't attack enemies - 🐛
 - Wierd tween / teleport to enemy - 🐛
+
+Both bugs are my skill issues. 💀
 ## How to use ❓
-1. Run script in Dimensions / Raids / Boss Rush / Time Challenge.
-2. (Save script to `autoexec`, if u want auto farm).
-3. Enjoy!
+1. Run [script](https://github.com/GhostDuckyy/GhostDuckyy/edit/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) in Dimensions / Raids / Boss Rush / Time Challenge.
+2. (Save [script](https://github.com/GhostDuckyy/GhostDuckyy/edit/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) to `autoexec`, if u want auto farm).
+3. Enjoy! 💖
 ### Settings ⚙️
 Configuration of script
 - `AutoFarm` / Boolean - set `false` to Abort Script.
