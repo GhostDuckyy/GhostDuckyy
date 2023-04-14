@@ -241,7 +241,7 @@ if (GetCharacter()) then
 end
 
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
-    task.wait(.5)
+    task.wait(.1)
     if (newCharacter) then
         if (newCharacter:WaitForChild("Head", 9e9)) then
             local NameLabel = newCharacter.Head:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
@@ -252,90 +252,91 @@ end)
 
 task.spawn(function()
     local Enemy = GetClosestEnemy()
-    while task.wait(.05) do
-    local Character, Root = GetCharacter(), GetRoot()
-    if not Settings.AutoFarm then
-        if (Character and Root) then
-            Root.Anchored = false
+    while task.wait(.1) do
+        if (not Settings.AutoFarm) then
+            if (Character and Root) then
+                Root.Anchored = false
+            end
+            break
         end
-        break
-    end
 
-    if IsEnded() then
-        debugPrint("Game Ended")
+        local Character, Root = GetCharacter(), GetRoot()
 
-        if Settings.AutoRetry then
-            debugPrint("Retry dungeon \n")
-            Retry()
-            continue
-        else
-            debugPrint("Leave dungeon \n")
-            Leave()
-            continue
+        if IsEnded() then
+            debugPrint("Game Ended")
+
+            if Settings.AutoRetry then
+                debugPrint("Retry dungeon \n")
+                Retry()
+                continue
+            else
+                debugPrint("Leave dungeon \n")
+                Leave()
+                continue
+            end
         end
-    end
 
-    if (Character and Root) and not IsEnded() then
-        if (Enemy and Enemy.Parent) then
-            local EnemyRoot = Enemy:WaitForChild("HumanoidRootPart")
-            local EnemyHumanoid = Enemy:FindFirstChildOfClass("Humanoid")
+        if (Character and Root) and not IsEnded() then
+            if (Enemy and Enemy.Parent) then
+                local EnemyRoot = Enemy:WaitForChild("HumanoidRootPart")
+                local EnemyHumanoid = Enemy:FindFirstChildOfClass("Humanoid")
 
-            if (EnemyHumanoid and EnemyHumanoid.Health <= 0) then
-                Enemy = nil
-                continue
+                if (EnemyHumanoid and EnemyHumanoid.Health <= 0) then
+                    Enemy = nil
+                    continue
+                end
+
+                debugPrint("MoveTo: "..Enemy.Name, "\n")
+                Tween(1, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 5, 0), EnemyRoot.CFrame.Position) })
+
+                if checkCD(1, true) then
+                    debugPrint("UseAssist: 1 \n")
+                    useAssist(1)
+                end
+
+                if checkCD(2, true) then
+                    debugPrint("UseAssist: 2 \n")
+                    useAssist(2)
+                end
+
+                if (not checkCD(5) and not checkCD(4) and not checkCD(3) and not checkCD(2) and not checkCD(1)) then
+                    debugPrint("UseSkill: BasicAttack")
+                    useAbility("click")
+                    continue
+                end
+
+                if checkCD(5) then
+                    debugPrint("UseSkill: 5")
+                    useAbility(5)
+                    continue
+                end
+
+                if checkCD(4) then
+                    debugPrint("UseSkill: 4")
+                    useAbility(4)
+                    continue
+                end
+
+                if checkCD(3) then
+                    debugPrint("UseSkill: 3")
+                    useAbility(3)
+                    continue
+                end
+
+                if checkCD(2) then
+                    debugPrint("UseSkill: 2")
+                    useAbility(2)
+                    continue
+                end
+
+                if checkCD(1) then
+                    debugPrint("UseSkill: 1")
+                    useAbility(1)
+                    continue
+                end
+            else
+                Enemy = GetClosestEnemy()
             end
-
-            debugPrint("MoveTo: "..Enemy.Name, "\n")
-            Tween(1, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 5, 0), EnemyRoot.CFrame.Position) })
-
-            if checkCD(1, true) then
-                debugPrint("UseAssist: 1 \n")
-                useAssist(1)
-            end
-
-            if checkCD(2, true) then
-                debugPrint("UseAssist: 2 \n")
-                useAssist(2)
-            end
-
-            if (not checkCD(5) and not checkCD(4) and not checkCD(3) and not checkCD(2) and not checkCD(1)) then
-                debugPrint("UseSkill: BasicAttack")
-                useAbility("click")
-                continue
-            end
-
-            if checkCD(5) then
-                debugPrint("UseSkill: 5")
-                useAbility(5)
-                continue
-            end
-
-            if checkCD(4) then
-                debugPrint("UseSkill: 4")
-                useAbility(4)
-                continue
-            end
-
-            if checkCD(3) then
-                debugPrint("UseSkill: 3")
-                useAbility(3)
-                continue
-            end
-
-            if checkCD(2) then
-                debugPrint("UseSkill: 2")
-                useAbility(2)
-                continue
-            end
-
-            if checkCD(1) then
-                debugPrint("UseSkill: 1")
-                useAbility(1)
-                continue
-            end
-        else
-            Enemy = GetClosestEnemy()
         end
-    end
     end
 end)
