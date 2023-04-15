@@ -202,7 +202,7 @@ function checkCD(number: number, assist: boolean)
 
    if (not SlotsHolder) then debug_SendOutput("SlotsHolder is 'nil' \n") return end
    if assist then
-        if number >= 3 then return end
+        if (number >= 3) then return end
         local Slot = SlotsHolder:WaitForChild("SkillAssist"..tostring(number))
         if Slot and Slot.Visible then
             local SkillName = Slot:WaitForChild("SkillName").Text
@@ -212,7 +212,7 @@ function checkCD(number: number, assist: boolean)
             end
         end
    else
-        if number >= 6 then return end
+        if (number >= 6) then return end
         local Slot = SlotsHolder:WaitForChild("Skill"..tostring(number))
 
         if (number == 5) then
