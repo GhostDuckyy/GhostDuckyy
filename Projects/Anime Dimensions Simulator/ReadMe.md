@@ -1,5 +1,6 @@
 # ReadMe
 Made by `Ghost-Ducky#7698`
+Game: [Anime Dimensions Simulator](https://roblox.com/games/6938803436/)
 ### Notes 🗒️
 This script still in **[W.I.P]** ⚠️.
 
@@ -12,9 +13,7 @@ Also don't look the source, i try my best to beautiful it (hope don't hurt ur ey
 ```
 ### Bugs 🪲
 - Can't attack enemies - 🐛
-- Wierd tween / teleport to enemy - 🐛
-
-Both bugs are my skill issues. 💀
+- Weird tween / teleport to enemy - 🐛
 ## How to use ❓
 1. Run [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) in Dimensions / Raids / Boss Rush / Time Challenge.
 2. (Save [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) to `autoexec`, if u want auto farm).
