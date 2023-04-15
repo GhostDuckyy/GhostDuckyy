@@ -3,6 +3,10 @@ local BlackList_IDs = {6938803436, 7338881230, 6990131029, 6990133340} -- Lobby,
 if table.find(BlackList_IDs, game.PlaceId) then return end
 if not game:IsLoaded() then game.Loaded:Wait() end
 
+if not workspace:FindFirstChild("Folders") then return end
+if not game:GetService("ReplicatedStorage"):FindFirstChild("RemoteEvents") then return end
+if not game:GetService("ReplicatedStorage"):FindFirstChild("RemoteFunctions") then return end
+
 --// Services \\--
 local HttpService             =  game:GetService("HttpService")
 local TweenService            =  game:GetService("TweenService")
@@ -317,7 +321,7 @@ task.spawn(function()
             Send_Webhook( {
                 ["content"]   =   "Thank you for using this script <3.",
                 ["embeds"]    =   { {
-                        ["title"]   = "Done Match!",
+                        ["title"]   = "Match is end!",
                         ["color"]   = 9699539,
 
                         ["author"]  = {
