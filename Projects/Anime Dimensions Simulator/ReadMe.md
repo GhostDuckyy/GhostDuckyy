@@ -29,7 +29,6 @@ Configuration of script
 getgenv().Settings = {
 	AutoFarm  	  =  	true,
 	AutoRetry  	  =  	true,
-	FpsBooster    =  	false,
 	Webhook       = 	{Enabled  =  false, Url =  "https://discord.com/api/webhooks/example/tokens"},
 }
 
