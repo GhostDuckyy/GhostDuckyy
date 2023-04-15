@@ -22,7 +22,6 @@ Also don't look the source, i try my best to beautiful it (hope don't hurt ur ey
 Configuration of script
 - `AutoFarm` / Boolean - set `false` to Abort Script.
 - `AutoRetry` / Boolean - Retry Dimensions.
-- `FpsBooster` / Boolean - less use CPU / GPU usage.
 - `Webhook` / Table - `Enabled`(Boolean) is enable / disable this feature, `Url` (String) replace with webhook ([Discord](https://discord.com/)) url.
 ### Loadstring 🌐
 ```lua
