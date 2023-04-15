@@ -24,16 +24,15 @@ local MainRemoteFunction      =  ReplicatedStorage:WaitForChild("RemoteFunctions
 
 --// Settings \\--
 getgenv().CurrentTween = nil
-getgenv().Settings = (type(getgenv().Settings) == "table" and getgenv().Settings) or {
+getgenv().Settings = (type(getgenv().Settings) == "table" and Settings) or {
     AutoFarm        =   true,
     AutoRetry       =   true,
-    FpsBooster      =   false,
     Webhook         =   {Enabled = false, Url = "https://discord.com/api/webhooks/example/tokens"},
     DebugMode       =   false,
 }
-getgenv().OtherSettings = {
+getgenv().OtherSettings = (getgenv().OtherSettings and OtherSettings) or {
     PostedResult           =    false,
-    Executed_FpsBooter     =    false
+    Executed_FpsBooter     =    false,
 }
 
 --// Webhook Functions \\--
@@ -289,17 +288,10 @@ function debug_SendOutput(...)
 end
 
 --// Source \\--
-if not Settings.AutoFarm then
-    Settings.AutoFarm = true
-end
-
-
 task.spawn(function()
     local Enemy = GetClosestEnemy()
 
     while task.wait(.1) do
-        Send_Webhook({["content"] = "ur mum!!!"})
-
         local Character, Root = GetCharacter(), GetRoot()
 
         if (not Settings.AutoFarm) then
@@ -308,11 +300,6 @@ task.spawn(function()
                 Root.Anchored = false
             end
             break
-        end
-
-        if (Settings.FpsBooster and not OtherSettings.Executed_FpsBooter) then
-            OtherSettings.Executed_FpsBooter = true
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Tools/FPS_booster.lua"))()
         end
 
         if IsEnded() then
