@@ -13,7 +13,7 @@ local TweenService            =  game:GetService("TweenService")
 local ReplicatedStorage       =  game:GetService("ReplicatedStorage")
 local Players                 =  game:GetService("Players")
 local LocalPlayer             =  Players.LocalPlayer
-local Camera                  = workspace.CurrentCamera
+local Camera                  =  workspace.CurrentCamera
 
 --// Folders \\--
 local Monsters                =  workspace:WaitForChild("Folders"):WaitForChild("Monsters")
