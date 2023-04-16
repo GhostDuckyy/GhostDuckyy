@@ -232,5 +232,5 @@ function auto_upgrade(x)
     end
 end
 
-misc:Button("Ghost-Ducky#7698",function() print("Hello World!") end)
+misc:Button("GhostyDuckyy#7698",function() print("Hello World!") end)
 misc:DestroyGui()
