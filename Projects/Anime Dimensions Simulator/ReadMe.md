@@ -25,8 +25,8 @@ Configuration of script
 getgenv().Settings = {
 	AutoFarm  	  =  	true,
 	AutoRetry  	  =  	true,
-	Webhook       = 	{Enabled  =  false, Url =  "https://discord.com/api/webhooks/example/tokens"},
+	Webhook       = 	{Enabled = false, Url = "https://discord.com/api/webhooks/example/tokens"},
 }
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Projects/Anime%20Dimensions%20Simulator/source.lua", true))("skull")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Projects/Anime%20Dimensions%20Simulator/source.lua", true))("💀")
 ```
