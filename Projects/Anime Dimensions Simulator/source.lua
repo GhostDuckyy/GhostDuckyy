@@ -13,6 +13,7 @@ local TweenService            =  game:GetService("TweenService")
 local ReplicatedStorage       =  game:GetService("ReplicatedStorage")
 local Players                 =  game:GetService("Players")
 local LocalPlayer             =  Players.LocalPlayer
+local PlayerGui               =  LocalPlayer:WaitForChild("PlayerGui")
 local Camera                  =  workspace.CurrentCamera
 
 --// Folders \\--
@@ -36,7 +37,7 @@ getgenv().OtherSettings = (getgenv().OtherSettings and OtherSettings) or {
 }
 
 --// Webhook Functions \\--
-function Send_Webhook(data, Types)
+function Send_Webhook(Types, data)
     local function matchUrl(input)
         if type(input) ~= "string" then return end
 
@@ -48,25 +49,61 @@ function Send_Webhook(data, Types)
     end
 
     if (not Settings.Webhook.Enabled) then return end
-
+    if (not matchUrl(Settings.Webhook.Url)) then debug_SendOutput("Invaild webhook url \n") return end
     if type(Settings.Webhook.Url) ~= "string" then return end
     if type(Types) ~= "string" then return end
-    if type(data) ~= "table" then return end
 
     if (Types == "GameEnded" and OtherSettings.PostedResult) then return end
+    if (Types == "GameEnded") then
+        local Leaderstats = LocalPlayer:WaitForChild("leaderstats")
+        local BattleGui = PlayerGui:WaitForChild("BattleGui"):WaitForChild("CenterUIFrame")
+        local OwnInfoFrame = PlayerGui:WaitForChild("UniversalGui"):WaitForChild("LeftUIFrame"):WaitForChild("OwnHealthBarFrame")
 
-    if (not matchUrl(Settings.Webhook.Url)) then debug_SendOutput("Invaild webhook url \n") return end
+        local Level, Damage = tostring(Leaderstats:WaitForChild("Level").Value or "null"), tostring(Leaderstats:WaitForChild("Damage").Value or "null")
+        local Time, Combo = (BattleGui:WaitForChild("TimerBack"):WaitForChild("Timer").Text or "null"), (BattleGui:WaitForChild("BestComboBack"):WaitForChild("BestComboNumber").Text or "0")
+        local Exp, Gems, Golds = (OwnInfoFrame:WaitForChild("Exp") and " (XP: "..OwnInfoFrame:WaitForChild("Exp").Text..")") or "null", "null", "null"
 
-    local HttpPost          =   (syn and syn.request) or request or (https and https.request) or http_request or function(...)
-        debug_SendOutput("Function: request is 'nil' \n")
+        for _, Label in pairs(OwnInfoFrame:GetDescendants()) do
+            if Label:IsA("TextLabel") and (Label.Parent and Label.Parent.Name == "CoinBlack") then
+                if (Label.Name == "Gem") then
+                    Gems = Label.Text
+                elseif (Label.Name == "Gold") then
+                    Golds = Label.Text
+                end
+            end
+        end
+
+        data = {
+            ["content"] = "Thank you for using this script. 💖",
+            ["embeds"] = { {
+                ["title"]       = "Match Results",
+                ["description"] = "Time elapsed: "..Time.."\nBest Combo: "..Combo.."\nDamage: "..Damage,
+                ["color"]       = 9055202,
+                ["fields"] = {
+                    { ["name"] = "User Infomation", ["value"] = "Name: "..LocalPlayer.DisplayName.." (@"..LocalPlayer.Name..")" },
+                    { ["name"] = "Stats", ["value"] = "Level: "..Level..Exp.."\nGems: "..Gems.."\nGolds: "..Golds },
+                },
+                ["author"] = {
+                    ["name"]      = "Anime Dimensions Simulator",
+                    ["url"]       = "https://roblox.com/games/6938803436/",
+                    ["icon_url"]  = "https://pbs.twimg.com/media/FtZ-2XKaIAI4MX7?format=jpg&name=small"
+                },
+                ["footer"] = {
+                    ["text"] = "👻 Made by Ghost-Ducky#7698"
+                }
+              } },
+          }
+    end
+
+    local HttpPost = (syn and syn.request) or request or (https and https.request) or http_request or function(...)
+        debug_SendOutput("Function: 'request' is nil \n")
         local Response =  {
-            ["Success"]     =   false
+            ["Success"] = false
        }
         return Response
     end
 
     local Encoded           =   HttpService:JSONEncode(data)
-
     local ResponseStatus    =   HttpPost(
         {
             ["Url"]         =   Settings.Webhook.Url,
@@ -79,7 +116,7 @@ function Send_Webhook(data, Types)
     if (ResponseStatus.Success) then
         debug_SendOutput("Succesfully posted result to webhook \n")
 
-        if (IsEnded() and Types == "GameEnded")  then
+        if (Types == "GameEnded")  then
             OtherSettings.PostedResult = true
         end
     else
@@ -117,12 +154,12 @@ local function Tween(Time: number, prop: table)
     end)
 
     CurrentTween:Play()
-    CurrentTween.Completed:Wait()
+    return CurrentTween.Completed:Wait()
 end
 
 --// Functions \\--
 function GetCharacter()
-    local RespawnTimerFrame = LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame"):WaitForChild("RespawnTimerFrame")
+    local RespawnTimerFrame = PlayerGui:WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame"):WaitForChild("RespawnTimerFrame")
     if (RespawnTimerFrame and RespawnTimerFrame.Visible) then
         return nil
     end
@@ -197,7 +234,7 @@ function checkCD(number: number, assist: boolean)
    if type(number) ~= "number" then return end
    if type(assist) ~= "boolean" then assist = false end
 
-   local SlotsHolder = LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame"):WaitForChild("SlotsHolder")
+   local SlotsHolder = PlayerGui:WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame"):WaitForChild("SlotsHolder")
 
    if (not SlotsHolder) then debug_SendOutput("SlotsHolder is 'nil' \n") return end
    if assist then
@@ -240,17 +277,23 @@ function useAbility(mode)
    local Root = GetRoot()
    if (not Root) then return end
 
-   task.spawn(function()
-      if type(mode) == "string" and mode:lower() == "click" then
-         MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame, ["attackNumber"] = math.random(1,2)}, "BasicAttack")
-      elseif type(mode) == "number" and mode < 6 then
-         MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame}, mode)
-      end
-   end)
+    task.spawn(function()
+        if type(mode) == "string" and mode:lower() == "click" then
+            task.spawn(function()
+                MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame, ["attackNumber"] = 1}, "BasicAttack")
+            end)
+
+            task.spawn(function()
+                MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame, ["attackNumber"] = 2}, "BasicAttack")
+            end)
+        elseif type(mode) == "number" and mode < 6 then
+            MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame}, mode)
+        end
+    end)
 end
 
 function IsEnded()
-   local CenterUIFrame = LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame")
+   local CenterUIFrame = PlayerGui:WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame")
    local ResultUIs = {
         [1] = CenterUIFrame:WaitForChild("ResultUI"),
         [2] = CenterUIFrame:WaitForChild("RaidResultUI"),
@@ -305,24 +348,7 @@ task.spawn(function()
         if IsEnded() then
             debug_SendOutput("Game Ended")
 
-            Send_Webhook( {
-                ["content"]   =   "Thank you for using this script <3.",
-                ["embeds"]    =   { {
-                        ["title"]   = "Match is end!",
-                        ["color"]   = 9699539,
-
-                        ["author"]  = {
-                            ["name"]    = "Anime Dimensions Simulator",
-                            ["url"]     = "https://roblox.com/games/6938803436/"
-                        },
-
-                        ["footer"]  = {
-                            ["text"]    = "More informations would added in future?"
-                        },
-                    } },
-                  ["username"] = "GhostyDuckyy",
-                  ["avatar_url"] = "https://i.gyazo.com/257576c5e1c86800502e5bf69c4b1882.jpg",
-            }, "GameEnded")
+            Send_Webhook("GameEnded")
 
             if (Settings.AutoRetry) then
                 debug_SendOutput("Retry dungeon \n")
