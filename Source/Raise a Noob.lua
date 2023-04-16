@@ -1,4 +1,4 @@
---// Made by Ghost-Ducky#7698
+--// Made by GhostyDuckyy#7698
 while true do if game:IsLoaded() then break; end task.wait(.1) end
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/UI/Elerium%20V2.lua"))()
@@ -50,7 +50,7 @@ main:AddSwitch("Clean poo", function(x)
     if x then task.spawn(function() for i,v in ipairs(workspace:GetChildren()) do if v:IsA("Model") and v.Name == "Poo" and v:FindFirstChild("PooBase") then if Character then Character.HumanoidRootPart.CFrame = CFrame.new(v.PooBase.CFrame.X, v.PooBase.CFrame.Y + 5, v.PooBase.CFrame.Z - 1.5) task.wait(.150) fireproximityprompt(v:FindFirstChildOfClass("ProximityPrompt")) task.wait(.350) end end end end) end
 end)
 
-misc:AddLabel("Made by Ghost-Ducky#7698")
+misc:AddLabel("Made by GhostyDuckyy#7698")
 misc:AddLabel("UI made by Singularity#5490")
 
 local _WalkSpeedSlider = misc:AddSlider("Walkspeed", function(x)
