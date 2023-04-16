@@ -334,7 +334,7 @@ end
 
 
 local misc = w:NewTab("Misc")do
-    local credit = misc:NewSection("Made by Ghost-Ducky#7698")
+    local credit = misc:NewSection("Made by GhostyDuckyy#7698")
     credit:NewTextBox("Set fps cap", "Must unlocked fps", function(v)
         if type(v) ~= "number" then v = tonumber(v) end
         if setfpscap then setfpscap(v) end
