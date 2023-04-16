@@ -9,11 +9,8 @@ Recommand use alt, use on ur **own risk**!!!
 Also don't look the source, i try my best to beautiful it (hope don't hurt ur eyes). <3
 ## Changelogs 🔧
 ```lua
-- Webhook: [Current are very useless]
+- Big Update for Webhook
 ```
-### Bugs 🪲
-- Can't attack enemies - 🐛
-- Weird tween / teleport to enemy - 🐛
 ## How to use ❓
 1. Run [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) in Dimensions / Raids / Boss Rush / Time Challenge.
 2. (Save [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) to `autoexec`, if u want auto farm).
