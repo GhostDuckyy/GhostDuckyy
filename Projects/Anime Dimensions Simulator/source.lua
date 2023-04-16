@@ -1,3 +1,5 @@
+--// Made by GhostyDuckyy#7698 \\--
+print("GhostyDuckyy is here!")
 --// Checks \\--
 local BlackList_IDs = {6938803436, 7338881230, 6990131029, 6990133340} -- Lobby, Raid Lobby, AFK Lobby, Character Testing
 if table.find(BlackList_IDs, game.PlaceId) then return end
@@ -60,8 +62,8 @@ function Send_Webhook(Types, data)
         local OwnInfoFrame = PlayerGui:WaitForChild("UniversalGui"):WaitForChild("LeftUIFrame"):WaitForChild("OwnHealthBarFrame")
 
         local Level, Damage = tostring(Leaderstats:WaitForChild("Level").Value or "null"), tostring(Leaderstats:WaitForChild("Damage").Value or "null")
-        local Time, Combo = (BattleGui:WaitForChild("TimerBack"):WaitForChild("Timer").Text or "null"), (BattleGui:WaitForChild("BestComboBack"):WaitForChild("BestComboNumber").Text or "0")
-        local Exp, Gems, Golds = (OwnInfoFrame:WaitForChild("Exp") and " (XP: "..OwnInfoFrame:WaitForChild("Exp").Text..")") or "null", "null", "null"
+        local Time, Combo, Defeated = (BattleGui:WaitForChild("TimerBack"):WaitForChild("Timer").Text or "null"), (BattleGui:WaitForChild("BestComboBack"):WaitForChild("BestComboNumber").Text or "null"), (BattleGui:WaitForChild("EnemiesDefeatedBack"):WaitForChild("EnemyDefeatedNumber").Text or "null")
+        local Exp, Gems, Golds = (OwnInfoFrame:WaitForChild("Exp") and " (**XP**: "..OwnInfoFrame:WaitForChild("Exp").Text..")") or " (**XP**: null)", "null", "null"
 
         for _, Label in pairs(OwnInfoFrame:GetDescendants()) do
             if Label:IsA("TextLabel") and (Label.Parent and Label.Parent.Name == "CoinBlack") then
@@ -74,14 +76,14 @@ function Send_Webhook(Types, data)
         end
 
         data = {
-            ["content"] = "Thank you for using this script. 💖",
+            ["content"] = "Thank you for using this script! 💖",
             ["embeds"] = { {
-                ["title"]       = "Match Results",
-                ["description"] = "Time elapsed: "..Time.."\nBest Combo: "..Combo.."\nDamage: "..Damage,
+                ["title"]       = "🚧 Match Results 🚧",
+                ["description"] = "**Time remain**: "..Time.." ⏳ | **Best Combo**: "..Combo.." 🌟\n**Defeated**: "..Defeated.." 🎯 | **Damage**: "..Damage.." ⚔️",
                 ["color"]       = 9055202,
                 ["fields"] = {
-                    { ["name"] = "User Infomation", ["value"] = "Name: "..LocalPlayer.DisplayName.." (@"..LocalPlayer.Name..")" },
-                    { ["name"] = "Stats", ["value"] = "Level: "..Level..Exp.."\nGems: "..Gems.."\nGolds: "..Golds },
+                    { ["name"] = "🔎 Infomation 🔍", ["value"] = "**User**: "..LocalPlayer.DisplayName.." (@"..LocalPlayer.Name..")\n**Level**: "..Level..Exp },
+                    { ["name"] = "💸 Currency 💸", ["value"] = "**Gems**: "..Gems.." 💎\n**Golds**: "..Golds.." 🪙" },
                 },
                 ["author"] = {
                     ["name"]      = "Anime Dimensions Simulator",
@@ -89,7 +91,7 @@ function Send_Webhook(Types, data)
                     ["icon_url"]  = "https://pbs.twimg.com/media/FtZ-2XKaIAI4MX7?format=jpg&name=small"
                 },
                 ["footer"] = {
-                    ["text"] = "👻 Made by Ghost-Ducky#7698"
+                    ["text"] = "👻 Made by GhostyDuckyy"
                 }
               } },
           }
@@ -277,19 +279,19 @@ function useAbility(mode)
    local Root = GetRoot()
    if (not Root) then return end
 
-    task.spawn(function()
-        if type(mode) == "string" and mode:lower() == "click" then
-            task.spawn(function()
-                MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame, ["attackNumber"] = 1}, "BasicAttack")
-            end)
+    if type(mode) == "string" and mode:lower() == "click" then
+        task.spawn(function()
+            MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame, ["attackNumber"] = 1}, "BasicAttack")
+        end)
 
-            task.spawn(function()
-                MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame, ["attackNumber"] = 2}, "BasicAttack")
-            end)
-        elseif type(mode) == "number" and mode < 6 then
+        task.spawn(function()
+            MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame, ["attackNumber"] = 2}, "BasicAttack")
+        end)
+    elseif type(mode) == "number" and mode < 6 then
+        task.spawn(function()
             MainRemoteEvent:FireServer("UseSkill", {["hrpCFrame"] = Root.CFrame}, mode)
-        end
-    end)
+        end)
+    end
 end
 
 function IsEnded()
