@@ -89,7 +89,7 @@ function base64:obfuscate(data)
     obfuscated = obfuscated..misc[1].." = {"..'"'..base64:encode(generateRandom(300))..'"'.."}; "..misc[2].." = {"..'"'..base64:encode(generateRandom(300))..'"'.."}; "..misc[3].." = {"..'"'..base64:encode(generateRandom(300))..'"'.."}; "
     
     warn("Done obfuscation in "..(startTick - tick()).." tick")
-    obfuscated = tostring("--// Secured by Ghost-Ducky#7698\n"..obfuscated.."end)()")
+    obfuscated = tostring("--// Secured by GhostyDuckyy#7698\n"..obfuscated.."end)()")
     if setclipboard then setclipboard(obfuscated) end
     return obfuscated
 end
