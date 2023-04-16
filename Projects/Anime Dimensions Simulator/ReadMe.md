@@ -1,5 +1,5 @@
 # ReadMe
-Made by `Ghost-Ducky#7698`
+Made by `GhostyDuckyy#7698`
 Game: [Anime Dimensions Simulator](https://roblox.com/games/6938803436/)
 ### Notes 🗒️
 This script still in **[W.I.P]** ⚠️.
