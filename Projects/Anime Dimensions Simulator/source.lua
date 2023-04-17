@@ -43,8 +43,6 @@ getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable)
     ["reward"]          = nil,
 }
 
-Settings.Webhook = {Enabled = true, Url = "https://discord.com/api/webhooks/1047726712013717544/KA9VjuNjL0NI2dI1ed3U897O1L7eeYwzKIlycRMeuMJgJTM1SuEb3oANpo0Y34kxDzYA"}
-
 --// Webhook Functions \\--
 function Send_Webhook(Types, data)
     local function matchUrl(input)
