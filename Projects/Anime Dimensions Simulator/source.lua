@@ -534,7 +534,11 @@ task.spawn(function()
                     continue
                 end
             else
-                Root.Anchored = false
+                task.spawn(function()
+                    local Last_CFrame = Root:GetPivot()
+                    Root.Anchored = false
+                    Root:PivotTo(Last_CFrame)
+                end)
                 Enemy = GetClosestEnemy()
             end
         end
