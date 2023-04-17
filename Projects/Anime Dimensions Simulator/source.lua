@@ -35,15 +35,22 @@ getgenv().Settings = (type(getgenv().Settings) == "table" and Settings) or {
 }
 getgenv().OtherSettings = (getgenv().OtherSettings and OtherSettings) or {
     PostedResult           =    false,
-    Executed_FpsBooter     =    false,
 }
+getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable) or {
+    ["timeTaken"]       = nil,
+    ["damageDealt"]     = nil,
+    ["rank"]            = nil,
+    ["reward"]          = nil,
+}
+
+Settings.Webhook = {Enabled = true, Url = "https://discord.com/api/webhooks/1047726712013717544/KA9VjuNjL0NI2dI1ed3U897O1L7eeYwzKIlycRMeuMJgJTM1SuEb3oANpo0Y34kxDzYA"}
 
 --// Webhook Functions \\--
 function Send_Webhook(Types, data)
     local function matchUrl(input)
         if type(input) ~= "string" then return end
 
-        if (string.find(input, "https://discord.com/api/webhooks/") and string.len(input) > 33 and input ~= "https://discord.com/api/webhooks/example/tokens") then
+        if (string.find(input, "https://discord.com/api/webhooks/") and input ~= "https://discord.com/api/webhooks/example/tokens") then
             return true
         end
 
@@ -57,13 +64,53 @@ function Send_Webhook(Types, data)
 
     if (Types == "GameEnded" and OtherSettings.PostedResult) then return end
     if (Types == "GameEnded") then
+        task.wait(.5)
+
         local Leaderstats = LocalPlayer:WaitForChild("leaderstats")
         local BattleGui = PlayerGui:WaitForChild("BattleGui"):WaitForChild("CenterUIFrame")
         local OwnInfoFrame = PlayerGui:WaitForChild("UniversalGui"):WaitForChild("LeftUIFrame"):WaitForChild("OwnHealthBarFrame")
 
         local Level, Damage = tostring(Leaderstats:WaitForChild("Level").Value or "null"), tostring(Leaderstats:WaitForChild("Damage").Value or "null")
-        local Time, Combo, Defeated = (BattleGui:WaitForChild("TimerBack"):WaitForChild("Timer").Text or "null"), (BattleGui:WaitForChild("BestComboBack"):WaitForChild("BestComboNumber").Text or "null"), (BattleGui:WaitForChild("EnemiesDefeatedBack"):WaitForChild("EnemyDefeatedNumber").Text or "null")
-        local Exp, Gems, Golds = (OwnInfoFrame:WaitForChild("Exp") and " (**XP**: "..OwnInfoFrame:WaitForChild("Exp").Text..")") or " (**XP**: null)", "null", "null"
+        local TimeRemaining, Combo, Defeated = (BattleGui:WaitForChild("TimerBack"):WaitForChild("Timer").Text or "00:00"), (BattleGui:WaitForChild("BestComboBack"):WaitForChild("BestComboNumber").Text or "null"), (BattleGui:WaitForChild("EnemiesDefeatedBack"):WaitForChild("EnemyDefeatedNumber").Text or "null")
+        local Exp, Gems, Golds = (OwnInfoFrame:WaitForChild("Exp") and " (**XP**: "..OwnInfoFrame["Exp"].Text..")") or " (**XP**: null)", "null", "null"
+
+        local Time = (rawget(ResultTable, "timeTaken") ~= nil and "**Time elapsed**: "..ResultTable.timeTaken.." ⏳") or "**Time remain**: "..TimeRemaining.." ⏳"
+        local Rank = (rawget(ResultTable, "rank") ~= nil and "**Rank**: "..ResultTable.rank.."\n") or "**Rank**: null\n"
+        local Rewards, StringRewards = (rawget(ResultTable, "reward") ~= nil and type(ResultTable) == "table" and ResultTable.reward) or nil, ""
+
+        if (Rewards) then
+            for i = 1, #Rewards do
+                local Current_Reward = Rewards[i]
+
+                if (type(Current_Reward) == "table") then
+                    StringRewards = StringRewards.."{"
+                    local array = 0
+
+                    for _,v in pairs(Current_Reward) do
+                        array = array + 1
+
+                        if array == #Current_Reward then
+                            if (tostring(_) == "type" or tostring(_) == "reward") then
+                                StringRewards = StringRewards..tostring(_)..": '"..tostring(v).."'"
+                            else
+                                StringRewards = StringRewards..tostring(_)..": "..tostring(v)
+                            end
+                        else
+                            if (tostring(_) == "type" or tostring(_) == "reward") then
+                                StringRewards = StringRewards..tostring(_)..": '"..tostring(v).."', "
+                            else
+                                StringRewards = StringRewards..tostring(_)..": "..tostring(v)..", "
+                            end
+                        end
+                    end
+                    StringRewards = StringRewards.."}, "
+                end
+            end
+        end
+
+        if (string.len(StringRewards) <= 0) then
+            StringRewards = "{'Somethong went wrong lol!'}"
+        end
 
         for _, Label in pairs(OwnInfoFrame:GetDescendants()) do
             if Label:IsA("TextLabel") and (Label.Parent and Label.Parent.Name == "CoinBlack") then
@@ -78,11 +125,12 @@ function Send_Webhook(Types, data)
         data = {
             ["content"] = "Thank you for using this script! 💖",
             ["embeds"] = { {
-                ["title"]       = "🚧 Match Results 🚧",
-                ["description"] = "**Time remain**: "..Time.." ⏳ | **Best Combo**: "..Combo.." 🌟\n**Defeated**: "..Defeated.." 🎯 | **Damage**: "..Damage.." ⚔️",
+                ["title"]       = "🏁 Match Results 🏁",
+                ["description"] =  Rank..Time.." | **Best Combo**: "..Combo.." 🌟\n**Defeated**: "..Defeated.." 🎯 | **Damage**: "..Damage.." ⚔️",
                 ["color"]       = 9055202,
                 ["fields"] = {
-                    { ["name"] = "🔎 Infomation 🔍", ["value"] = "**User**: "..LocalPlayer.DisplayName.." (@"..LocalPlayer.Name..")\n**Level**: "..Level..Exp },
+                    { ["name"] = "🎁 Rewards 🎁", ["value"] = "```lua\n"..StringRewards.."\n```" },
+                    { ["name"] = "🔎 Infomation 🔎", ["value"] = "**User**: "..LocalPlayer.DisplayName.." (@"..LocalPlayer.Name..")\n**Level**: "..Level..Exp },
                     { ["name"] = "💸 Currency 💸", ["value"] = "**Gems**: "..Gems.." 💎\n**Golds**: "..Golds.." 🪙" },
                 },
                 ["author"] = {
@@ -135,8 +183,8 @@ local function CancelTween()
     end
 end
 
-local function Tween(Time: number, prop: table)
-    if type(Time) ~= "number" then return end
+local function Tween(SpeedPerStuds: number, prop: table)
+    if type(SpeedPerStuds) ~= "number" then return end
     if type(prop) ~= "table" then return end
 
     CancelTween()
@@ -150,6 +198,7 @@ local function Tween(Time: number, prop: table)
         task.wait(.1)
     end
 
+    local Time = (Root.CFrame.Position - prop.CFrame.Position).Magnitude / SpeedPerStuds
     CurrentTween = TweenService:Create(Root, TweenInfo.new(Time, Enum.EasingStyle.Linear), prop)
     CurrentTween.Completed:Connect(function()
         CurrentTween = nil
@@ -332,6 +381,33 @@ function debug_SendOutput(...)
     end)
 end
 
+--// Hooks \\--
+task.spawn(function()
+    local onMainRemoteEventCall = nil
+
+    for i,v in next, getconnections(MainRemoteEvent.OnClientEvent) do
+        if (v.Function) then
+            local info = debug.getinfo(v.Function)
+            if (info.name == "onMainRemoteEventCall") then
+               onMainRemoteEventCall = v.Function
+               break
+            end
+        end
+    end
+
+    if (onMainRemoteEventCall) then
+        local old;
+        old = hookfunction(onMainRemoteEventCall, newcclosure(function(FuncName, ...)
+            if (FuncName == "SetUpResultUI") then
+                local args = {...}
+                getgenv().ResultTable = args[1]
+             end
+             old(FuncName, ...)
+        end))
+        debug_SendOutput("Hooked 'onMainRemoteEventCall' function")
+    end
+end)
+
 --// Source \\--
 task.spawn(function()
     local Enemy = GetClosestEnemy()
@@ -393,22 +469,23 @@ task.spawn(function()
                     task.spawn(function()
                         Camera.CameraSubject = EnemyHumanoid
 
-                        if (Character and Character:WaitForChild("Head", 10)) then
-                            local NameLabel = Character["Head"]:WaitForChild("PlayerHealthBarGui"):WaitForChild("PlayerName")
-                            NameLabel.Text = "Made by Ghost-Ducky#7698"
+                        if (Character and Character:WaitForChild("Head", 10) and Character["Head"]:WaitForChild("PlayerHealthBarGui", 10)) then
+                            local NameLabel = Character["Head"]["PlayerHealthBarGui"]:WaitForChild("PlayerName")
+                            NameLabel.Text = "Made by GhostyDuckyy#7698"
                         end
                     end)
                 )
 
-                local distance = (Root.CFrame.Position - EnemyRoot.CFrame.Position).Magnitude
+                local EnemyCFrame = EnemyRoot:GetPivot()
+                local distance = (Root.CFrame.Position - EnemyRoot.Position).Magnitude
 
                 Root.Anchored = false
                 debug_SendOutput("MoveTo: "..Enemy.Name.."\n")
 
-                if distance <= 15 then
-                    Tween(.5, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) })
+                if (distance <= 20) then
+                    Tween(15, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
                 else
-                    Tween(.8, {CFrame = CFrame.lookAt(EnemyRoot.CFrame.Position + Vector3.new(0, 4, 0), EnemyRoot.CFrame.Position) })
+                    Tween(160, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
                 end
 
                 Root.Anchored = true
@@ -424,41 +501,42 @@ task.spawn(function()
                 end
 
                 if (not checkCD(5) and not checkCD(4) and not checkCD(3) and not checkCD(2) and not checkCD(1)) then
-                    debug_SendOutput("Use Skill: BasicAttack")
+                    debug_SendOutput("BasicAttack")
                     useAbility("click")
                     continue
                 end
 
                 if checkCD(5) then
-                    debug_SendOutput("Use Skill: 5")
+                    debug_SendOutput("Use Ability: 5")
                     useAbility(5)
                     continue
                 end
 
                 if checkCD(4) then
-                    debug_SendOutput("Use Skill: 4")
+                    debug_SendOutput("Use Ability: 4")
                     useAbility(4)
                     continue
                 end
 
                 if checkCD(3) then
-                    debug_SendOutput("Use Skill: 3")
+                    debug_SendOutput("Use Ability: 3")
                     useAbility(3)
                     continue
                 end
 
                 if checkCD(2) then
-                    debug_SendOutput("Use Skill: 2")
+                    debug_SendOutput("Use Ability: 2")
                     useAbility(2)
                     continue
                 end
 
                 if checkCD(1) then
-                    debug_SendOutput("UseS kill: 1")
+                    debug_SendOutput("Use Ability: 1")
                     useAbility(1)
                     continue
                 end
             else
+                Root.Anchored = false
                 Enemy = GetClosestEnemy()
             end
         end
