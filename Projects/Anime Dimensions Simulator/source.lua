@@ -9,6 +9,28 @@ if not workspace:FindFirstChild("Folders") then return end
 if not game:GetService("ReplicatedStorage"):FindFirstChild("RemoteEvents") then return end
 if not game:GetService("ReplicatedStorage"):FindFirstChild("RemoteFunctions") then return end
 
+if (type(getgenv().Connections) == "table" and #Connections >= 1) then
+    local function Disconnect(v)
+        pcall(task.spawn(function()
+            if (type(v) == "table" and rawget(v, "Type") ~= nil) then
+                if (v.Type == "Hookfunction") then
+                    if (rawget(v, "Hooked_function") ~= nil and rawget(v, "Function") ~= nil) then
+                        hookfunction(v.Hooked_function, v.Function)
+                    end
+                elseif (v.Type == "Connection") then
+                    if (rawget(v, "Connected") ~= nil) then
+                        v.Connected:Disconnect()
+                    end
+                end
+            end
+        end))
+    end
+
+    for i,v in pairs(Connections) do
+        Disconnect(v)
+    end
+end
+
 --// Services \\--
 local HttpService             =  game:GetService("HttpService")
 local TweenService            =  game:GetService("TweenService")
@@ -42,6 +64,8 @@ getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable)
     ["rank"]            = nil,
     ["reward"]          = nil,
 }
+
+getgenv().Connections = {}
 
 --// Webhook Functions \\--
 function Send_Webhook(Types, data)
@@ -82,24 +106,15 @@ function Send_Webhook(Types, data)
 
                 if (type(Current_Reward) == "table") then
                     StringRewards = StringRewards.."{"
-                    local array = 0
 
                     for _,v in pairs(Current_Reward) do
-                        array = array + 1
-
-                        if array == #Current_Reward then
-                            if (tostring(_) == "type" or tostring(_) == "reward") then
-                                StringRewards = StringRewards..tostring(_)..": '"..tostring(v).."'"
-                            else
-                                StringRewards = StringRewards..tostring(_)..": "..tostring(v)
-                            end
+                        if (tostring(_) == "type" or tostring(_) == "reward") then
+                            StringRewards = StringRewards..tostring(_)..": '"..tostring(v).."'"
                         else
-                            if (tostring(_) == "type" or tostring(_) == "reward") then
-                                StringRewards = StringRewards..tostring(_)..": '"..tostring(v).."', "
-                            else
-                                StringRewards = StringRewards..tostring(_)..": "..tostring(v)..", "
-                            end
+                            StringRewards = StringRewards..tostring(_)..": "..tostring(v)
                         end
+
+                        StringRewards = StringRewards..", "
                     end
                     StringRewards = StringRewards.."}, "
                 end
@@ -394,14 +409,20 @@ task.spawn(function()
     end
 
     if (onMainRemoteEventCall) then
+        local FunctionToGrab = {
+            "SetUpResultUI",
+            "setupRaidUI",
+        }
         local old;
         old = hookfunction(onMainRemoteEventCall, newcclosure(function(FuncName, ...)
-            if (FuncName == "SetUpResultUI") then
+            if (table.find(FunctionToGrab, FuncName)) then
                 local args = {...}
                 getgenv().ResultTable = args[1]
              end
              old(FuncName, ...)
         end))
+
+        table.insert(Connections, {Hooked_function = onMainRemoteEventCall, Function = old})
         debug_SendOutput("Hooked 'onMainRemoteEventCall' function")
     end
 end)
@@ -534,12 +555,10 @@ task.spawn(function()
                     continue
                 end
             else
-                task.spawn(function()
-                    local Last_CFrame = Root:GetPivot()
-                    Root.Anchored = false
-                    task.wait(.1)
-                    Root:PivotTo(Last_CFrame)
-                end)
+                local Last_CFrame = Root:GetPivot()
+                Root.Anchored = false
+                Root:PivotTo(Last_CFrame)
+
                 Enemy = GetClosestEnemy()
             end
         end
