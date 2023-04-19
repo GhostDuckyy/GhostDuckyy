@@ -122,7 +122,7 @@ function Send_Webhook(Types, data)
         end
 
         if (string.len(StringRewards) <= 0) then
-            StringRewards = "{'Somethong went wrong lol!'}"
+            StringRewards = "{'Failed to grab rewards 💀'}"
         end
 
         for _, Label in pairs(OwnInfoFrame:GetDescendants()) do
@@ -422,7 +422,7 @@ task.spawn(function()
              old(FuncName, ...)
         end))
 
-        table.insert(Connections, {Hooked_function = onMainRemoteEventCall, Function = old})
+        table.insert(Connections, {Type = "Hookfunction", Hooked_function = onMainRemoteEventCall, Function = old})
         debug_SendOutput("Hooked 'onMainRemoteEventCall' function")
     end
 end)
@@ -555,10 +555,6 @@ task.spawn(function()
                     continue
                 end
             else
-                local Last_CFrame = Root:GetPivot()
-                Root.Anchored = false
-                Root:PivotTo(Last_CFrame)
-
                 Enemy = GetClosestEnemy()
             end
         end
