@@ -9,8 +9,8 @@ Recommand use alt, use on ur **own risk**!!!
 Also don't look the source, i try my best to beautiful it (hope don't hurt ur eyes). <3
 ## Changelogs 🔧
 ```lua
-- Big Update on Webhook!
-- Improved on Tween
+- Changed matchUrl (check webhook url) to new Method
+- Added a check on Executed
 ```
 ## How to use ❓
 1. Run [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) in Dimensions / Raids / Boss Rush / Time Challenge.
@@ -18,9 +18,9 @@ Also don't look the source, i try my best to beautiful it (hope don't hurt ur ey
 3. Enjoy! 💖
 ### Settings ⚙️
 Configuration of script
-- `AutoFarm` / Boolean - set `false` to Abort Script.
-- `AutoRetry` / Boolean - Retry Dimensions.
-- `Webhook` / Table - `Enabled`(Boolean) is enable / disable this feature, `Url` (String) replace with webhook ([Discord](https://discord.com/)) url.
+- `AutoFarm`: Boolean - **Enable** / **Disable** script.
+- `AutoRetry`: Boolean - Retry Dimensions.
+- `Webhook`: Table - `Enabled`(Boolean) is **enable** / **disable** this feature, `Url` (String) replace with webhook ([Discord](https://discord.com/)) url.
 ### Loadstring 🌐
 ```lua
 getgenv().Settings = {
