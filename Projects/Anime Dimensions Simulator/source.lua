@@ -555,6 +555,7 @@ task.spawn(function()
                     continue
                 end
             else
+                Root.Anchored = false
                 Enemy = GetClosestEnemy()
             end
         end
