@@ -10,7 +10,7 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 3. ❔ - (Untested but should be work)
 
 ### Paid
-* [Synapse X](https://x.synapse.to/) - in V2 the `hookfunction` is broken (💀 this not my fault)
+* [Synapse X](https://x.synapse.to/) - ⚠️ in V2 the `hookfunction` is broken (💀 this not my fault) ⚠️
 * [Script-Ware](https://script-ware.com/w) - ✅
 ### Free
 * [Krnl](https://krnl.place/) - ❔
@@ -19,6 +19,7 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 * [Oxygen-U](https://oxygenu.xyz/) - ❔
 ## Changelogs 🔧
 ```lua
+- Improved CancelTween
 - Changed matchUrl (check webhook url) to new Method
 - Added a check on Executed
 ```
