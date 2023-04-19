@@ -1,13 +1,14 @@
 --// Made by GhostyDuckyy#7698 \\--
 print("GhostyDuckyy is here!")
+
 --// Checks \\--
 local BlackList_IDs = {6938803436, 7338881230, 6990131029, 6990133340} -- Lobby, Raid Lobby, AFK Lobby, Character Testing
 if table.find(BlackList_IDs, game.PlaceId) then return end
 if not game:IsLoaded() then game.Loaded:Wait() end
 
-if not workspace:FindFirstChild("Folders") then return end
-if not game:GetService("ReplicatedStorage"):FindFirstChild("RemoteEvents") then return end
-if not game:GetService("ReplicatedStorage"):FindFirstChild("RemoteFunctions") then return end
+if not workspace:WaitForChild("Folders", 180) then return end
+if not game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents", 180) then return end
+if not game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions", 180) then return end
 
 if (type(getgenv().Connections) == "table" and #Connections >= 1) then
     local function Disconnect(v)
@@ -41,23 +42,27 @@ local PlayerGui               =  LocalPlayer:WaitForChild("PlayerGui")
 local Camera                  =  workspace.CurrentCamera
 
 --// Folders \\--
-local Monsters                =  workspace:WaitForChild("Folders"):WaitForChild("Monsters")
+local Monsters                =  workspace["Folders"]:WaitForChild("Monsters")
 
 --// Remotes \\--
-local MainRemoteEvent         =  ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("MainRemoteEvent")
-local MainRemoteFunction      =  ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
+local MainRemoteEvent         =  ReplicatedStorage["RemoteEvents"]:WaitForChild("MainRemoteEvent")
+local MainRemoteFunction      =  ReplicatedStorage["RemoteFunctions"]:WaitForChild("MainRemoteFunction")
 
 --// Settings \\--
 getgenv().CurrentTween = nil
+
 getgenv().Settings = (type(getgenv().Settings) == "table" and Settings) or {
     AutoFarm        =   true,
     AutoRetry       =   true,
     Webhook         =   {Enabled = false, Url = "https://discord.com/api/webhooks/example/tokens"},
     DebugMode       =   false,
 }
+
 getgenv().OtherSettings = (getgenv().OtherSettings and OtherSettings) or {
-    PostedResult           =    false,
+    PostedResult    =   false,
+    Executed        =   false,
 }
+
 getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable) or {
     ["timeTaken"]       = nil,
     ["damageDealt"]     = nil,
@@ -69,11 +74,23 @@ getgenv().Connections = {}
 
 --// Webhook Functions \\--
 function Send_Webhook(Types, data)
+    local Request = (syn and syn.request) or request or (https and https.request) or http_request or function(...)
+        debug_SendOutput("Function: 'request' is invaild \n")
+        local Response =  {
+            ["Success"] = false
+       }
+        return Response
+    end
+
     local function matchUrl(input)
         if type(input) ~= "string" then return end
 
         if (string.find(input, "https://discord.com/api/webhooks/") and input ~= "https://discord.com/api/webhooks/example/tokens") then
-            return true
+            local Response = Request({Url = Settings.Webhook.Url, Method = "GET"})
+
+            if (Response["Success"]) then
+                return true
+            end
         end
 
         return false
@@ -158,16 +175,8 @@ function Send_Webhook(Types, data)
           }
     end
 
-    local HttpPost = (syn and syn.request) or request or (https and https.request) or http_request or function(...)
-        debug_SendOutput("Function: 'request' is nil \n")
-        local Response =  {
-            ["Success"] = false
-       }
-        return Response
-    end
-
     local Encoded           =   HttpService:JSONEncode(data)
-    local ResponseStatus    =   HttpPost(
+    local ResponseStatus    =   Request(
         {
             ["Url"]         =   Settings.Webhook.Url,
             ["Body"]        =   Encoded,
@@ -189,7 +198,7 @@ end
 
 --// Tween \\--
 local function CancelTween()
-    if (CurrentTween ~= nil) then
+    if (typeof(CurrentTween) == "Instance" and CurrentTween:IsA("Tween")) then
         CurrentTween:Pause()
         CurrentTween:Cancel()
         CurrentTween = nil
@@ -272,7 +281,7 @@ function GetClosestEnemy()
 
             local distance = (Root.Position - Child.HumanoidRootPart.Position).Magnitude
 
-            if distance < Last_distance then
+            if (distance < Last_distance) then
                 Enemy = Child
                 Last_distance = distance
             end
@@ -395,6 +404,8 @@ function debug_SendOutput(...)
 end
 
 --// Hooks \\--
+if (OtherSettings.Executed) then return else OtherSettings.Executed = true end
+
 task.spawn(function()
     local onMainRemoteEventCall = nil
 
@@ -439,7 +450,6 @@ task.spawn(function()
                 Camera.CameraSubject = Character:FindFirstChildOfClass("Humanoid")
                 Root.Anchored = false
             end
-            break
         end
 
         if IsEnded() then
@@ -502,7 +512,7 @@ task.spawn(function()
                 debug_SendOutput("MoveTo: "..Enemy.Name.."\n")
 
                 if (distance <= 20) then
-                    Tween(15, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
+                    Tween(18, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
                 else
                     Tween(160, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
                 end
@@ -556,6 +566,7 @@ task.spawn(function()
                 end
             else
                 Root.Anchored = false
+                Root.Velocity = Vector3.new()
                 Enemy = GetClosestEnemy()
             end
         end
