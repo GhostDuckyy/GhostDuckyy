@@ -13,7 +13,7 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 * [Script-Ware](https://script-ware.com/w) - ✅
 ### 🃏 Free
 * [Krnl](https://krnl.place/) - ❔
-* [Fluxus](https://fluxteam.xyz/) - ❔
+* [Fluxus](https://fluxteam.xyz/) (PC & Mobile) - ❔
 * [Comet](https://cometrbx.xyz/) - ❔
 * [Oxygen-U](https://oxygenu.xyz/) - ❔
 ## Changelogs 🔧
