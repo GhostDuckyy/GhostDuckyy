@@ -51,30 +51,6 @@ getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable)
     ["reward"]          = nil,
 }
 
-if (type(getgenv().Connections) == "table" and #Connections >= 1) and not OtherSettings.Executed then
-    local function Disconnect(v)
-        pcall(task.spawn(function()
-            if (type(v) == "table" and rawget(v, "Type") ~= nil) then
-                if (v.Type == "Hookfunction") then
-                    if (rawget(v, "Hooked_function") ~= nil and rawget(v, "Function") ~= nil) then
-                        hookfunction(v.Hooked_function, v.Function)
-                    end
-                elseif (v.Type == "Connection") then
-                    if (rawget(v, "Connected") ~= nil) then
-                        v.Connected:Disconnect()
-                    end
-                end
-            end
-        end))
-    end
-
-    for i,v in pairs(Connections) do
-        Disconnect(v)
-    end
-end
-
-getgenv().Connections = {}
-
 --// Webhook Functions \\--
 function Send_Webhook(Types, data)
     local Request = (syn and syn.request) or request or (https and https.request) or http_request or function(...)
@@ -434,7 +410,7 @@ task.spawn(function()
 
             return old_function(FuncName, ...)
         end)
-        table.insert(Connections, {Type = "Hookfunction", Hooked_function = onMainRemoteEventCall, Function = old_function})
+
         debug_SendOutput("Hooked 'onMainRemoteEventCall' function")
     else
         debug_SendOutput("Failed to hook 'onMainRemoteEventCall' function")
