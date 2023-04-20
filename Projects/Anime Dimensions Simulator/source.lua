@@ -410,9 +410,7 @@ end
 if (OtherSettings.Executed) then return else OtherSettings.Executed = true end
 
 task.spawn(function()
-    --if (Platform == Enum.Platform.Android or Platform == Enum.Platform.IOS) then return end
     local onMainRemoteEventCall = nil
-    local FunctionToGrab = {"SetUpResultUI", "setupRaidUI"}
 
     for i,v in pairs(getconnections(MainRemoteEvent.OnClientEvent)) do
         if (v.Function) then
@@ -430,7 +428,7 @@ task.spawn(function()
         old_function = hookfunction(onMainRemoteEventCall, function(FuncName, ...)
             local Args = {...}
 
-            if table.find(FunctionToGrab, FuncName) then
+            if (FuncName == "SetUpResultUI" or FuncName == "setupRaidUI") then
                 getgenv().ResultTable = Args[1]
             end
 
