@@ -18,8 +18,7 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 * [Oxygen-U](https://oxygenu.xyz/) - ❔
 ## Changelogs 🔧
 ```lua
-- Should be fixed on hook 'onMainRemoteEventCall' function?
-- Removed useless unhook/disconnect
+- Added Rayfield as gui
 ```
 ## How to use ❓
 1. Run [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) in Dimensions / Raids / Boss Rush / Time Challenge.
