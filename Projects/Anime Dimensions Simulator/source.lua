@@ -1,6 +1,3 @@
---// Made by GhostyDuckyy#7698 \\--
-print("GhostyDuckyy is here!")
-
 --// Checks \\--
 local BlackList_IDs = {6938803436, 7338881230, 6990131029, 6990133340} -- Lobby, Raid Lobby, AFK Lobby, Character Testing
 if table.find(BlackList_IDs, game.PlaceId) then return end
@@ -22,6 +19,14 @@ local LocalPlayer             =  Players.LocalPlayer
 local PlayerGui               =  LocalPlayer:WaitForChild("PlayerGui")
 local Camera                  =  workspace.CurrentCamera
 
+local Request = (syn and syn.request) or request or (https and https.request) or http_request or function(...)
+    debug_SendOutput("Function: 'request' is invaild \n")
+    local Response =  {
+        ["Success"] = false
+   }
+    return Response
+end
+
 --// Folders \\--
 local Monsters                =  workspace["Folders"]:WaitForChild("Monsters")
 
@@ -33,8 +38,8 @@ local MainRemoteFunction      =  ReplicatedStorage["RemoteFunctions"]:WaitForChi
 getgenv().CurrentTween = nil
 
 getgenv().Settings = (type(getgenv().Settings) == "table" and Settings) or {
-    AutoFarm        =   true,
-    AutoRetry       =   true,
+    AutoFarm        =   false,
+    AutoRetry       =   false,
     Webhook         =   {Enabled = false, Url = "https://discord.com/api/webhooks/example/tokens"},
     DebugMode       =   false,
 }
@@ -42,6 +47,7 @@ getgenv().Settings = (type(getgenv().Settings) == "table" and Settings) or {
 getgenv().OtherSettings = (getgenv().OtherSettings and OtherSettings) or {
     PostedResult    =   false,
     Executed        =   false,
+    IsHooked        =   false,
 }
 
 getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable) or {
@@ -51,30 +57,24 @@ getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable)
     ["reward"]          = nil,
 }
 
+if (OtherSettings.Executed) then return else OtherSettings.Executed = true end
+
 --// Webhook Functions \\--
-function Send_Webhook(Types, data)
-    local Request = (syn and syn.request) or request or (https and https.request) or http_request or function(...)
-        debug_SendOutput("Function: 'request' is invaild \n")
-        local Response =  {
-            ["Success"] = false
-       }
-        return Response
-    end
+local function matchUrl(input)
+    if type(input) ~= "string" then return end
 
-    local function matchUrl(input)
-        if type(input) ~= "string" then return end
+    if (string.find(input, "https://discord.com/api/webhooks/") and input ~= "https://discord.com/api/webhooks/example/tokens") then
+        local Response = Request({Url = Settings.Webhook.Url, Method = "GET"})
 
-        if (string.find(input, "https://discord.com/api/webhooks/") and input ~= "https://discord.com/api/webhooks/example/tokens") then
-            local Response = Request({Url = Settings.Webhook.Url, Method = "GET"})
-
-            if (Response["Success"]) then
-                return true
-            end
+        if (Response["Success"]) then
+            return true
         end
-
-        return false
     end
 
+    return false
+end
+
+function Send_Webhook(Types, data)
     if (not Settings.Webhook.Enabled) then return end
     if (not matchUrl(Settings.Webhook.Url)) then debug_SendOutput("Invaild webhook url \n") return end
     if type(Settings.Webhook.Url) ~= "string" then return end
@@ -295,7 +295,7 @@ function checkCD(number: number, assist: boolean)
         if (Slot and Slot.Visible) then
             local SkillName = Slot:WaitForChild("SkillName")
 
-            if (not SkillName.Visible and not tonumber(SkillName.Text)) then
+            if (not SkillName.Visible) then
                 return true
             end
         end
@@ -383,9 +383,8 @@ function debug_SendOutput(...)
 end
 
 --// Hooks \\--
-if (OtherSettings.Executed) then return else OtherSettings.Executed = true end
-
 task.spawn(function()
+    if (OtherSettings.IsHooked) then return end
     local onMainRemoteEventCall = nil
 
     for i,v in pairs(getconnections(MainRemoteEvent.OnClientEvent)) do
@@ -412,142 +411,246 @@ task.spawn(function()
         end)
 
         debug_SendOutput("Hooked 'onMainRemoteEventCall' function")
+        OtherSettings.IsHooked = true
     else
         debug_SendOutput("Failed to hook 'onMainRemoteEventCall' function")
     end
 end)
 
+--// Rayfield | Sirius Team \\--
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+local Window = Rayfield:CreateWindow( {
+    Name                  =  "GhotsyDuckyy Projects",
+    LoadingTitle          =  "Anime Dimensions Simulator",
+    LoadingSubtitle       =  "by Sirius & GhostyDuckyy",
+    KeySystem             =  false,
+    ConfigurationSaving   =  { Enabled = false, FolderName = "GhotsyDuckyy Projects", FileName = "Anime Dimensions Simulator", },
+    Discord               =  { Enabled = false, Invite =  "Current no invite",  RememberJoins = false, },
+} )
+
+local Tabs = {
+    ["Main"]   =  Window:CreateTab("Main", 4483362458),
+    ["Misc"]   =  Window:CreateTab("Misc", 4483362458),
+}
+
+local Toggles = {}
+
 --// Source \\--
-task.spawn(function()
-    local Enemy = GetClosestEnemy()
+Tabs["Main"]:CreateSection("Auto Farm")
 
-    while task.wait(.1) do
-        local Character, Root = GetCharacter(), GetRoot()
+Toggles["Enaled_AutoFarm"] = Tabs["Main"]:CreateToggle( {
+    Name            =  "Enabled",
+    Current_Value   =  false,
+    Flag            =  "Enaled_AutoFarm",
+    Callback = function(value)
+        Settings.AutoFarm = value
 
-        if (not Settings.AutoFarm) then
-            if (Character and Root and Character:FindFirstChildOfClass("Humanoid")) then
-                Camera.CameraSubject = Character:FindFirstChildOfClass("Humanoid")
-                Root.Anchored = false
-            end
-        end
+        if (value) then
+            task.spawn(function()
+                local Enemy = GetClosestEnemy()
 
-        if IsEnded() then
-            debug_SendOutput("Game Ended")
+                while task.wait(.1) do
+                    local Character, Root = GetCharacter(), GetRoot()
 
-            Send_Webhook("GameEnded")
-
-            if (Settings.AutoRetry) then
-                debug_SendOutput("Retry dungeon \n")
-                Retry()
-                continue
-            else
-                debug_SendOutput("Leave dungeon \n")
-                Leave()
-                continue
-            end
-        end
-
-        if (Character and Root) and not IsEnded() then
-            local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-
-            if (Enemy and Enemy.Parent) then
-                local EnemyRoot = Enemy:FindFirstChild("HumanoidRootPart")
-                local EnemyHumanoid = Enemy:FindFirstChildOfClass("Humanoid")
-
-                if (not EnemyRoot or not EnemyHumanoid) then
-                    Enemy = nil
-                    Camera.CameraSubject = Humanoid
-                    continue
-                end
-
-                if (Enemy:FindFirstChildOfClass("BillboardGui") and Enemy:WaitForChild("EnemyHealthBarGui")) then
-                    local Health = Enemy["EnemyHealthBarGui"]:WaitForChild("HealthText")
-                    if tonumber(Health.Text) <= 0 then
-                        Enemy = nil
-                        Camera.CameraSubject = Humanoid
-                        continue
-                    end
-                else
-                    Enemy = nil
-                    Camera.CameraSubject = Humanoid
-                    continue
-                end
-
-                pcall(
-                    task.spawn(function()
-                        Camera.CameraSubject = EnemyHumanoid
-
-                        if (Character and Character:WaitForChild("Head", 10) and Character["Head"]:WaitForChild("PlayerHealthBarGui", 10)) then
-                            local NameLabel = Character["Head"]["PlayerHealthBarGui"]:WaitForChild("PlayerName")
-                            NameLabel.Text = "Made by GhostyDuckyy#7698"
+                    if (not Settings.AutoFarm) then
+                        if (Character and Root and Character:FindFirstChildOfClass("Humanoid")) then
+                            Camera.CameraSubject = Character:FindFirstChildOfClass("Humanoid")
+                            Root.Anchored = false
+                            break
                         end
-                    end)
-                )
+                    end
 
-                local EnemyCFrame = EnemyRoot:GetPivot()
-                local distance = (Root.CFrame.Position - EnemyRoot.Position).Magnitude
+                    if IsEnded() then
+                        debug_SendOutput("Game Ended")
 
-                Root.Anchored = false
-                debug_SendOutput("MoveTo: "..Enemy.Name.."\n")
+                        Send_Webhook("GameEnded")
 
-                if (distance <= 20) then
-                    Tween(18, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
-                else
-                    Tween(160, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
+                        if (Settings.AutoRetry) then
+                            debug_SendOutput("Retry dungeon \n")
+                            Retry()
+                            continue
+                        else
+                            debug_SendOutput("Leave dungeon \n")
+                            Leave()
+                            continue
+                        end
+                    end
+
+                    if (Character and Root) and not IsEnded() then
+                        local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+
+                        if (Enemy and Enemy.Parent) then
+                            local EnemyRoot = Enemy:FindFirstChild("HumanoidRootPart")
+                            local EnemyHumanoid = Enemy:FindFirstChildOfClass("Humanoid")
+
+                            if (not EnemyRoot or not EnemyHumanoid) then
+                                Enemy = nil
+                                Camera.CameraSubject = Humanoid
+                                continue
+                            end
+
+                            if (Enemy:FindFirstChildOfClass("BillboardGui") and Enemy:WaitForChild("EnemyHealthBarGui")) then
+                                local Health = Enemy["EnemyHealthBarGui"]:WaitForChild("HealthText")
+                                if tonumber(Health.Text) <= 0 then
+                                    Enemy = nil
+                                    Camera.CameraSubject = Humanoid
+                                    continue
+                                end
+                            else
+                                Enemy = nil
+                                Camera.CameraSubject = Humanoid
+                                continue
+                            end
+
+                            pcall(
+                                task.spawn(function()
+                                    Camera.CameraSubject = EnemyHumanoid
+
+                                    if (Character and Character:WaitForChild("Head", 10) and Character["Head"]:WaitForChild("PlayerHealthBarGui", 10)) then
+                                        local NameLabel = Character["Head"]["PlayerHealthBarGui"]:WaitForChild("PlayerName")
+                                        NameLabel.Text = "Made by GhostyDuckyy#7698"
+                                    end
+                                end)
+                            )
+
+                            local EnemyCFrame = EnemyRoot:GetPivot()
+                            local distance = (Root.CFrame.Position - EnemyRoot.Position).Magnitude
+
+                            Root.Anchored = false
+                            debug_SendOutput("MoveTo: "..Enemy.Name.."\n")
+
+                            if (distance <= 20) then
+                                Tween(18, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
+                            else
+                                Tween(160, {CFrame = CFrame.lookAt(EnemyCFrame.Position + Vector3.new(0, 4, 0), EnemyCFrame.Position) })
+                            end
+
+                            Root.Anchored = true
+
+                            if checkCD(1, true) then
+                                debug_SendOutput("Use Assist: 1")
+                                useAssist(1)
+                            end
+
+                            if checkCD(2, true) then
+                                debug_SendOutput("Use Assist: 2")
+                                useAssist(2)
+                            end
+
+                            if (not checkCD(5) and not checkCD(4) and not checkCD(3) and not checkCD(2) and not checkCD(1)) then
+                                debug_SendOutput("BasicAttack")
+                                useAbility("click")
+                                continue
+                            end
+
+                            if checkCD(5) then
+                                debug_SendOutput("Use Ability: 5")
+                                useAbility(5)
+                                continue
+                            end
+
+                            if checkCD(4) then
+                                debug_SendOutput("Use Ability: 4")
+                                useAbility(4)
+                                continue
+                            end
+
+                            if checkCD(3) then
+                                debug_SendOutput("Use Ability: 3")
+                                useAbility(3)
+                                continue
+                            end
+
+                            if checkCD(2) then
+                                debug_SendOutput("Use Ability: 2")
+                                useAbility(2)
+                                continue
+                            end
+
+                            if checkCD(1) then
+                                debug_SendOutput("Use Ability: 1")
+                                useAbility(1)
+                                continue
+                            end
+                        else
+                            Root.Anchored = false
+                            Root.Velocity = Vector3.new()
+                            Enemy = GetClosestEnemy()
+                        end
+                    end
                 end
-
-                Root.Anchored = true
-
-                if checkCD(1, true) then
-                    debug_SendOutput("Use Assist: 1")
-                    useAssist(1)
-                end
-
-                if checkCD(2, true) then
-                    debug_SendOutput("Use Assist: 2")
-                    useAssist(2)
-                end
-
-                if (not checkCD(5) and not checkCD(4) and not checkCD(3) and not checkCD(2) and not checkCD(1)) then
-                    debug_SendOutput("BasicAttack")
-                    useAbility("click")
-                    continue
-                end
-
-                if checkCD(5) then
-                    debug_SendOutput("Use Ability: 5")
-                    useAbility(5)
-                    continue
-                end
-
-                if checkCD(4) then
-                    debug_SendOutput("Use Ability: 4")
-                    useAbility(4)
-                    continue
-                end
-
-                if checkCD(3) then
-                    debug_SendOutput("Use Ability: 3")
-                    useAbility(3)
-                    continue
-                end
-
-                if checkCD(2) then
-                    debug_SendOutput("Use Ability: 2")
-                    useAbility(2)
-                    continue
-                end
-
-                if checkCD(1) then
-                    debug_SendOutput("Use Ability: 1")
-                    useAbility(1)
-                    continue
-                end
-            else
-                Root.Anchored = false
-                Root.Velocity = Vector3.new()
-                Enemy = GetClosestEnemy()
-            end
+            end)
         end
+    end,
+} )
+
+Toggles.Enaled_AutoFarm:Set(Settings.AutoFarm)
+
+Toggles["Enaled_AutoRetry"] = Tabs["Main"]:CreateToggle( {
+    Name            =  "Auto Retry Dimension",
+    Current_Value   =  false,
+    Flag            =  "Enaled_AutoRetry",
+    Callback = function(value)
+        Settings.AutoRetry = value
+    end,
+} )
+
+Toggles.Enaled_AutoRetry:Set(Settings.AutoRetry)
+
+Tabs["Main"]:CreateSection("Webhook")
+
+local Webhook_Status = Tabs["Main"]:CreateLabel(
+    "Webhook Status is "..( (matchUrl(Settings.Webhook.Url) and "Vaild") or "Invaild" )
+)
+
+Toggles["Enaled_Webhook"] = Tabs["Main"]:CreateToggle( {
+    Name            =  "Enabled Webhook",
+    Current_Value   =  false,
+    Flag            =  "Enaled_Webhook",
+    Callback = function(value)
+        Settings.Webhook.Enabled = value
+    end,
+} )
+
+Toggles.Enaled_Webhook:Set(Settings.Webhook.Enabled)
+
+Tabs["Main"]:CreateInput( {
+    Name                        = "Insert Url",
+    PlaceholderText             =  Settings.Webhook.Url,
+    RemoveTextAfterFocusLost    =  true,
+    Callback = function(value)
+        Settings.Webhook.Url    = tostring(value)
+
+        if (matchUrl(Settings.Webhook.Url)) then
+            Webhook_Status:Set("Webhook Status is Vaild")
+        else
+            Webhook_Status:Set("Webhook Status is Vaild")
+        end
+    end,
+} )
+
+Tabs["Misc"]:CreateSection("Etc")
+
+Tabs["Misc"]:CreateButton( {
+    Name = "Abort Script",
+    Callback = function()
+        Toggles.Enaled_AutoFarm:Set(false)
+        Toggles.Enaled_Webhook:Set(false)
+
+        OtherSettings.Executed = false
+
+        Rayfield:Destroy()
     end
-end)
+} )
+
+Tabs["Misc"]:CreateSection("Credits")
+
+Tabs["Misc"]:CreateParagraph( {
+    Title = "Scripters",
+    Content = "GhostyDuckyy#7698",
+} )
+
+Tabs["Misc"]:CreateParagraph( {
+    Title = "Rayfield Interface Suite",
+    Content = "Sirius Team",
+} )
