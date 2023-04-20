@@ -616,7 +616,7 @@ Toggles.Enaled_Webhook:Set(Settings.Webhook.Enabled)
 
 Tabs["Main"]:CreateInput( {
     Name                        = "Insert Url",
-    PlaceholderText             =  Settings.Webhook.Url,
+    PlaceholderText             =  "https://discord.com/api/webhooks/example/tokens",
     RemoveTextAfterFocusLost    =  true,
     Callback = function(value)
         Settings.Webhook.Url    = tostring(value)
