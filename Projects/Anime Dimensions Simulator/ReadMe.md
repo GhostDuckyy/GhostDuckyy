@@ -3,15 +3,15 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 ## Notes 🗒️
 1. Don't look the source, i tried my best to beautiful it (hopefully don't hurt ur eyes). 🤍
 ## Supported Exploits 🗃️
-### Status
+### 📊 Status
 1. ✅ - Working
 2. ⚠️ - Broken / Script Issues
 3. ❔ - (Untested but should be work)
 
-### Paid
+### 🎴 Paid
 * [Synapse X](https://x.synapse.to/) - ✅
 * [Script-Ware](https://script-ware.com/w) - ✅
-### Free
+### 🃏 Free
 * [Krnl](https://krnl.place/) - ❔
 * [Fluxus](https://fluxteam.xyz/) - ❔
 * [Comet](https://cometrbx.xyz/) - ❔
