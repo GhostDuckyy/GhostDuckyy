@@ -36,6 +36,9 @@ end
 local HttpService             =  game:GetService("HttpService")
 local TweenService            =  game:GetService("TweenService")
 local ReplicatedStorage       =  game:GetService("ReplicatedStorage")
+local UserInputService        =  game:GetService("UserInputService")
+
+local Platform                =  UserInputService:GetPlatform()
 local Players                 =  game:GetService("Players")
 local LocalPlayer             =  Players.LocalPlayer
 local PlayerGui               =  LocalPlayer:WaitForChild("PlayerGui")
@@ -407,6 +410,7 @@ end
 if (OtherSettings.Executed) then return else OtherSettings.Executed = true end
 
 task.spawn(function()
+    if (Platform == Enum.Platform.Android or Platform == Enum.Platform.IOS or Platform == Enum.Platform.None) then return end
     local onMainRemoteEventCall = nil
 
     for i,v in next, getconnections(MainRemoteEvent.OnClientEvent) do
