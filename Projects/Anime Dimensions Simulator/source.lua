@@ -10,28 +10,6 @@ if not workspace:WaitForChild("Folders", 180) then return end
 if not game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents", 180) then return end
 if not game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions", 180) then return end
 
-if (type(getgenv().Connections) == "table" and #Connections >= 1) then
-    local function Disconnect(v)
-        pcall(task.spawn(function()
-            if (type(v) == "table" and rawget(v, "Type") ~= nil) then
-                if (v.Type == "Hookfunction") then
-                    if (rawget(v, "Hooked_function") ~= nil and rawget(v, "Function") ~= nil) then
-                        hookfunction(v.Hooked_function, v.Function)
-                    end
-                elseif (v.Type == "Connection") then
-                    if (rawget(v, "Connected") ~= nil) then
-                        v.Connected:Disconnect()
-                    end
-                end
-            end
-        end))
-    end
-
-    for i,v in pairs(Connections) do
-        Disconnect(v)
-    end
-end
-
 --// Services \\--
 local HttpService             =  game:GetService("HttpService")
 local TweenService            =  game:GetService("TweenService")
@@ -72,6 +50,28 @@ getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable)
     ["rank"]            = nil,
     ["reward"]          = nil,
 }
+
+if (type(getgenv().Connections) == "table" and #Connections >= 1) and not OtherSettings.Executed then
+    local function Disconnect(v)
+        pcall(task.spawn(function()
+            if (type(v) == "table" and rawget(v, "Type") ~= nil) then
+                if (v.Type == "Hookfunction") then
+                    if (rawget(v, "Hooked_function") ~= nil and rawget(v, "Function") ~= nil) then
+                        hookfunction(v.Hooked_function, v.Function)
+                    end
+                elseif (v.Type == "Connection") then
+                    if (rawget(v, "Connected") ~= nil) then
+                        v.Connected:Disconnect()
+                    end
+                end
+            end
+        end))
+    end
+
+    for i,v in pairs(Connections) do
+        Disconnect(v)
+    end
+end
 
 getgenv().Connections = {}
 
@@ -410,35 +410,36 @@ end
 if (OtherSettings.Executed) then return else OtherSettings.Executed = true end
 
 task.spawn(function()
-    if (Platform == Enum.Platform.Android or Platform == Enum.Platform.IOS) then return end
+    --if (Platform == Enum.Platform.Android or Platform == Enum.Platform.IOS) then return end
     local onMainRemoteEventCall = nil
+    local FunctionToGrab = {"SetUpResultUI", "setupRaidUI"}
 
-    for i,v in next, getconnections(MainRemoteEvent.OnClientEvent) do
+    for i,v in pairs(getconnections(MainRemoteEvent.OnClientEvent)) do
         if (v.Function) then
             local info = debug.getinfo(v.Function)
+
             if (info.name == "onMainRemoteEventCall") then
-               onMainRemoteEventCall = v.Function
-               break
+                onMainRemoteEventCall = v.Function
+                break
             end
         end
     end
 
     if (onMainRemoteEventCall) then
-        local FunctionToGrab = {
-            "SetUpResultUI",
-            "setupRaidUI",
-        }
-        local old;
-        old = hookfunction(onMainRemoteEventCall, newcclosure(function(FuncName, ...)
-            if (table.find(FunctionToGrab, FuncName)) then
-                local args = {...}
-                getgenv().ResultTable = args[1]
-             end
-             old(FuncName, ...)
-        end))
+        local old_function;
+        old_function = hookfunction(onMainRemoteEventCall, function(FuncName, ...)
+            local Args = {...}
 
-        table.insert(Connections, {Type = "Hookfunction", Hooked_function = onMainRemoteEventCall, Function = old})
+            if table.find(FunctionToGrab, FuncName) then
+                getgenv().ResultTable = Args[1]
+            end
+
+            return old_function(FuncName, ...)
+        end)
+        table.insert(Connections, {Type = "Hookfunction", Hooked_function = onMainRemoteEventCall, Function = old_function})
         debug_SendOutput("Hooked 'onMainRemoteEventCall' function")
+    else
+        debug_SendOutput("Failed to hook 'onMainRemoteEventCall' function")
     end
 end)
 
