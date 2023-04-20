@@ -1,17 +1,17 @@
 # ReadMe
 Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.com/games/6938803436/)
 ## Notes 🗒️
-1. **Script are crash on Mobile!**
-2. Don't look the source, i tried my best to beautiful it (hopefully don't hurt ur eyes). 🤍
-## Supported Executors / Exploits 🗃️
+1. Don't look the source, i tried my best to beautiful it (hopefully don't hurt ur eyes). 🤍
+## Supported Exploits 🗃️
+`hookfunction` is broken on most Exploits (💀 this not my fault)
 ### Status
 1. ✅ - Working
 2. ⚠️ - Broken / Script Issues
 3. ❔ - (Untested but should be work)
 
 ### Paid
-* [Synapse X](https://x.synapse.to/) - ⚠️ in V2 the `hookfunction` is broken (💀 this not my fault)
-* [Script-Ware](https://script-ware.com/w) - ⚠️ Unable get match result (💀)
+* [Synapse X](https://x.synapse.to/) - ✅
+* [Script-Ware](https://script-ware.com/w) - ✅
 ### Free
 * [Krnl](https://krnl.place/) - ❔
 * [Fluxus](https://fluxteam.xyz/) - ❔
