@@ -3,7 +3,6 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 ## Notes 🗒️
 1. Don't look the source, i tried my best to beautiful it (hopefully don't hurt ur eyes). 🤍
 ## Supported Exploits 🗃️
-`hookfunction` is broken on most Exploits, unable grab match result (💀)
 ### Status
 1. ✅ - Working
 2. ⚠️ - Broken / Script Issues
@@ -19,9 +18,7 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 * [Oxygen-U](https://oxygenu.xyz/) - ❔
 ## Changelogs 🔧
 ```lua
-- Improved CancelTween
-- Changed matchUrl (check webhook url) to new Method
-- Added a check on Executed
+- Should be fixed on hook 'onMainRemoteEventCall' function?
 ```
 ## How to use ❓
 1. Run [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) in Dimensions / Raids / Boss Rush / Time Challenge.
