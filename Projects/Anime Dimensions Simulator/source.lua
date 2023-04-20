@@ -317,7 +317,7 @@ function checkCD(number: number, assist: boolean)
         if (number >= 3) then return end
         local Slot = SlotsHolder:WaitForChild("SkillAssist"..tostring(number))
         if (Slot and Slot.Visible) then
-            local SkillName = Slot:WaitForChild("SkillName").Text
+            local SkillName = Slot:WaitForChild("SkillName")
 
             if (not SkillName.Visible and not tonumber(SkillName.Text)) then
                 return true
