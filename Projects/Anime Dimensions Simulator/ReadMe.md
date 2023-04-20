@@ -22,7 +22,7 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 ```
 ## How to use ❓
 1. Run [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) in Dimensions / Raids / Boss Rush / Time Challenge.
-2. (Save [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) to `autoexec`, if u want auto farm).
+2. (Save [script](https://github.com/GhostDuckyy/GhostDuckyy/blob/main/Projects/Anime%20Dimensions%20Simulator/ReadMe.md#loadstring-) to `autoexec`, if u want automatic load).
 3. Enjoy! 💖
 ### Settings ⚙️
 Configuration of script
