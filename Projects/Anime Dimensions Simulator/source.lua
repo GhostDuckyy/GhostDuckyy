@@ -600,7 +600,7 @@ Toggles.Enaled_AutoRetry:Set(Settings.AutoRetry)
 Tabs["Main"]:CreateSection("Webhook")
 
 local Webhook_Status = Tabs["Main"]:CreateLabel(
-    "Webhook Status is "..( (matchUrl(Settings.Webhook.Url) and "Vaild") or "Invaild" )
+    "Webhook Status: "..( (matchUrl(Settings.Webhook.Url) and "Vaild") or "Invaild" )
 )
 
 Toggles["Enaled_Webhook"] = Tabs["Main"]:CreateToggle( {
