@@ -422,7 +422,7 @@ local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shle
 local Window = Rayfield:CreateWindow( {
     Name                  =  "GhotsyDuckyy Projects",
     LoadingTitle          =  "Anime Dimensions Simulator",
-    LoadingSubtitle       =  "by Sirius & GhostyDuckyy",
+    LoadingSubtitle       =  "by Sirius Team & GhostyDuckyy",
     KeySystem             =  false,
     ConfigurationSaving   =  { Enabled = false, FolderName = "GhotsyDuckyy Projects", FileName = "Anime Dimensions Simulator", },
     Discord               =  { Enabled = false, Invite =  "Current no invite",  RememberJoins = false, },
