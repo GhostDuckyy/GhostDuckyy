@@ -410,7 +410,7 @@ end
 if (OtherSettings.Executed) then return else OtherSettings.Executed = true end
 
 task.spawn(function()
-    if (Platform == Enum.Platform.Android or Platform == Enum.Platform.IOS or Platform == Enum.Platform.None) then return end
+    if (Platform == Enum.Platform.Android or Platform == Enum.Platform.IOS) then return end
     local onMainRemoteEventCall = nil
 
     for i,v in next, getconnections(MainRemoteEvent.OnClientEvent) do
