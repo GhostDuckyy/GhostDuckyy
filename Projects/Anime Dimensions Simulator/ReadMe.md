@@ -10,8 +10,8 @@ Made by `GhostyDuckyy#7698`, Game: [Anime Dimensions Simulator](https://roblox.c
 3. ❔ - (Untested but should be work)
 
 ### Paid
-* [Synapse X](https://x.synapse.to/) - ⚠️ in V2 the `hookfunction` is broken (💀 this not my fault) ⚠️
-* [Script-Ware](https://script-ware.com/w) - ✅
+* [Synapse X](https://x.synapse.to/) - ⚠️ in V2 the `hookfunction` is broken (💀 this not my fault)
+* [Script-Ware](https://script-ware.com/w) - ⚠️ Unable get match result (💀)
 ### Free
 * [Krnl](https://krnl.place/) - ❔
 * [Fluxus](https://fluxteam.xyz/) - ❔
