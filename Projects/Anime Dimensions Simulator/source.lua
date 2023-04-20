@@ -313,13 +313,13 @@ function checkCD(number: number, assist: boolean)
    local SlotsHolder = PlayerGui:WaitForChild("UniversalGui"):WaitForChild("UniversalCenterUIFrame"):WaitForChild("SlotsHolder")
 
    if (not SlotsHolder) then debug_SendOutput("SlotsHolder is 'nil' \n") return end
-   if assist then
+   if (assist) then
         if (number >= 3) then return end
         local Slot = SlotsHolder:WaitForChild("SkillAssist"..tostring(number))
-        if Slot and Slot.Visible then
+        if (Slot and Slot.Visible) then
             local SkillName = Slot:WaitForChild("SkillName").Text
 
-            if not SkillName.Visible then
+            if (not SkillName.Visible and not tonumber(SkillName.Text)) then
                 return true
             end
         end
