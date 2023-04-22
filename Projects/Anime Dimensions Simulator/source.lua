@@ -48,6 +48,7 @@ getgenv().OtherSettings = (getgenv().OtherSettings and OtherSettings) or {
     PostedResult    =   false,
     Executed        =   false,
     IsHooked        =   false,
+    ConnectedOnTeleport  =  false,
 }
 
 getgenv().ResultTable = (type(getgenv().ResultTable) == "table" and ResultTable) or {
@@ -415,6 +416,24 @@ task.spawn(function()
     else
         debug_SendOutput("Failed to hook 'onMainRemoteEventCall' function")
     end
+end)
+
+--// Auto Load \\--
+task.spawn(function()
+    if (OtherSettings.ConnectedOnTeleport) then return end
+    OtherSettings.ConnectedOnTeleport = true
+
+    LocalPlayer.OnTeleport:Connect(function(State)
+        if (not Settings.AutoRetry) then return end
+        if (State == Enum.TeleportState.Started) then
+            local Queue_on_teleport = (syn and syn.queue_on_teleport) or queue_on_teleport or queueonteleport or function(...)
+                debug_SendOutput("Function: 'queue_on_teleport' is nil")
+            end
+            local SettingsString = [[getgenv().Settings = { AutoFarm = ]]..Settings.AutoFarm..[[, AutoRetry = ]]..Settings.AutoRetry..[[, Webhook = { Enabled = ]]..Settings.Webhook.Enabled..[[, Url = ]]..Settings.Webhook.Url..[[, } \n]]
+            local Source = [[loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/GhostDuckyy/main/Projects/Anime%20Dimensions%20Simulator/source.lua", true))("💀")]]
+            Queue_on_teleport(SettingsString..Source)
+        end
+    end)
 end)
 
 --// Rayfield | Sirius Team \\--
