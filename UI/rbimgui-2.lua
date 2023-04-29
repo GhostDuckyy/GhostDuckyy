@@ -2118,7 +2118,7 @@ local library library = {
                             end
                             self.selected = nil
                             dropdownObject.object:Destroy()
-                            rawset(dropdownObject, name, nil)
+                            rawset(dropdownObjects, name, nil)
                         end
 
                         return dropdownObject
