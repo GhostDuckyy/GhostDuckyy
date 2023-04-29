@@ -2339,7 +2339,7 @@ local library library = {
                     end
 
                     function self.open()
-                        if ( typeof(countSize(folderItems)) ~= "Vector2" or typeof(countSize(folderItems)) ~= "Vector2" ) then return end
+                        if ( typeof(countSize(folderItems)) ~= "Vector2" or typeof(countSize(folderItems, true)) ~= "Vector2" ) then return end
                         local size = countSize(folderItems, true).X
                         resize(folder, { Size = UDim2.new(1, 0, 0, 20 + countSize(folderItems).Y + 2) }, folderOptions.animation)
                         resize(expand, { Rotation = 90 }, folderOptions.animation)
