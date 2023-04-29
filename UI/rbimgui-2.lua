@@ -2079,7 +2079,7 @@ local library library = {
                         local dropdownObject = { }
                         dropdownObject.selected = false
                         dropdownObject.name = name
-                        assert(rawget(dropdownObjects, name) == nil, string.format("object already exists in dropdown '%s'", dropdownOptions.text))
+                        assert(rawget(dropdownObjects, name) ~= nil, string.format("object already exists in dropdown '%s'", dropdownOptions.text))
                         rawset(dropdownObjects, name, dropdownObject)
 
                         local dropdownOption = new("DropdownOption")
