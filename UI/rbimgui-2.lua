@@ -2080,11 +2080,11 @@ local library library = {
                         dropdownObject.selected = false
                         dropdownObject.name = name
 
-                        if rawget(dropdownObjects, name) ~= nil then
-                            print(rawget(dropdownObjects, name))
+                        if (type(rawget(dropdownObjects, name)) == "table") then
+                            dropdownObjects[name].Destroy()
                         end
 
-                        rawset(dropdownObjects, name, dropdownObject)
+                        dropdownObjects[name] = dropdownObject
 
                         local dropdownOption = new("DropdownOption")
                         dropdownObject.object = dropdownOption
@@ -2121,7 +2121,7 @@ local library library = {
                                 dropdownWindow:FindFirstChild("Content"):FindFirstChild("Selected").Text = "[...]"
                             end
                             self.selected = nil
-                            rawset(dropdownObject, name, nil)
+                            dropdownObjects[name] = nil
                             dropdownObject.object:Destroy()
                         end
 
@@ -2339,7 +2339,7 @@ local library library = {
                     end
 
                     function self.open()
-                        local size = countSize(folderItems, true).X
+                        -- local size = countSize(folderItems, true).X
                         resize(folder, { Size = UDim2.new(1, 0, 0, 20 + countSize(folderItems).Y + 2) }, folderOptions.animation)
                         resize(expand, { Rotation = 90 }, folderOptions.animation)
                         self.isopen = true
