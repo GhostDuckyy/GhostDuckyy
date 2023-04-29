@@ -2079,6 +2079,11 @@ local library library = {
                         local dropdownObject = { }
                         dropdownObject.selected = false
                         dropdownObject.name = name
+
+                        if rawget(dropdownObjects, name) ~= nil then
+                            rawget(dropdownObjects, name).Destroy()
+                        end
+
                         rawset(dropdownObjects, name, dropdownObject)
 
                         local dropdownOption = new("DropdownOption")
@@ -2111,12 +2116,12 @@ local library library = {
                         end
 
                         function dropdownObject.Destroy()
-                            if rawget(dropdownObjects, name) then
+                            if rawget(dropdownObject, name) then
                                 inner:FindFirstChild("Value").Text = "[...]"
                                 dropdownWindow:FindFirstChild("Content"):FindFirstChild("Selected").Text = "[...]"
                             end
                             self.selected = nil
-                            rawset(dropdownObjects, name, nil)
+                            rawset(dropdownObject, name, nil)
                             dropdownObject.object:Destroy()
                         end
 
@@ -2130,6 +2135,10 @@ local library library = {
                                 dropdownObject.object.Parent = dropdownItems
                             end
                         end
+                    end
+
+                    function self.options()
+                        return dropdownOptions
                     end
 
                     do -- search bar
