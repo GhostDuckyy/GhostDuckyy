@@ -2116,8 +2116,8 @@ local library library = {
                                 dropdownWindow:FindFirstChild("Content"):FindFirstChild("Selected").Text = "[...]"
                             end
                             self.selected = nil
-                            dropdownObject.object:Destroy()
                             rawset(dropdownObjects, name, nil)
+                            dropdownObject.object:Destroy()
                         end
 
                         return dropdownObject
