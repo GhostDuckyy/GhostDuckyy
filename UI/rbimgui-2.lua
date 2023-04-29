@@ -2116,11 +2116,11 @@ local library library = {
                         end
 
                         function dropdownObject.Destroy()
-                            if rawget(dropdownObject, name) then
+                            if (self.selected == name) then
+                                self.selected = nil
                                 inner:FindFirstChild("Value").Text = "[...]"
                                 dropdownWindow:FindFirstChild("Content"):FindFirstChild("Selected").Text = "[...]"
                             end
-                            self.selected = nil
                             dropdownObjects[name] = nil
                             dropdownObject.object:Destroy()
                         end
