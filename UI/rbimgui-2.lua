@@ -2081,7 +2081,7 @@ local library library = {
                         dropdownObject.name = name
 
                         if rawget(dropdownObjects, name) ~= nil then
-                            rawget(dropdownObjects, name).Destroy()
+                            print(rawget(dropdownObjects, name))
                         end
 
                         rawset(dropdownObjects, name, dropdownObject)
