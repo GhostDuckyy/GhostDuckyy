@@ -1,1 +1,1 @@
-Here for release script and **never** update. (lol)
+Here for released script and **never** update.
